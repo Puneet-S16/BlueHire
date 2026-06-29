@@ -143,3 +143,20 @@ The security foundation relies on the following environment variables:
 - `ALGORITHM`: The JWT signing algorithm (defaults to `HS256`).
 - `ACCESS_TOKEN_EXPIRE_MINUTES`: Lifespan of access tokens.
 - `REFRESH_TOKEN_EXPIRE_DAYS`: Lifespan of refresh tokens.
+
+## Authentication Schemas
+
+The authentication system employs Pydantic V2 schemas to enforce strict data validation before any business logic is executed.
+
+### Validation Rules & Policy
+- **Email Validation**: Enforced via `EmailStr` adhering to standard RFCs.
+- **Password Policy**: Enforced using custom validators. Passwords must be at least 8 characters long, and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.
+- **Shared Enums**: The `SignupRequest` and `UserResponse` schemas share the `RoleEnum` with the SQLAlchemy models, ensuring complete consistency across the application layers.
+
+### Key Schemas
+- `SignupRequest`: Validates new registrations (email, password, role, term acceptance).
+- `LoginRequest`: Validates standard JSON-based login payloads.
+- `TokenResponse`: Structures the returned `access_token`, `refresh_token`, and token metadata.
+- `RefreshTokenRequest`: Validates refresh token payloads.
+- `UserResponse`: Defines the public profile format, purposefully omitting sensitive fields like `password_hash`.
+- `ChangePasswordRequest`: Validates authenticated password resets and enforces strength and confirmation match checks.

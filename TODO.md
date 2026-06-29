@@ -20,7 +20,8 @@
 ## Milestone 4 🔐 Authentication
 - [x] Authentication Architecture
 - [x] Security Foundation
-- [ ] Authentication Schemas
+- [x] Authentication Schemas
+- [ ] Authentication Service
 - [ ] Signup API
 - [ ] Login API
 - [ ] Role-based Authorization

@@ -1,6 +1,11 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [v0.4.3] - 2026-06-30
+### Added
+- Authentication Schemas using Pydantic V2 (`SignupRequest`, `LoginRequest`, `TokenResponse`, etc.).
+- Robust validation rules for emails and strict password policies.
+- Shared `RoleEnum` integrated directly into schemas for end-to-end consistency.
 
 ## [v0.4.2] - 2026-06-30
 ### Added
