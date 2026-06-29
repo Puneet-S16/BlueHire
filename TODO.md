@@ -18,11 +18,11 @@
 - [x] Rollback Testing
 
 ## Milestone 4 🔐 Authentication
-- [ ] JWT Authentication
+- [x] Authentication Architecture
+- [x] Security Foundation
+- [ ] Authentication Schemas
 - [ ] Signup API
 - [ ] Login API
-- [ ] Password Hashing
-- [ ] Refresh Tokens
 - [ ] Role-based Authorization
 
 ## Milestone 5 👤 User Profiles

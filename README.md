@@ -125,3 +125,21 @@ alembic downgrade -1
 
 ### Development Notes
 - When downgrading PostgreSQL databases, you may need to manually drop `ENUM` types using `DROP TYPE type_name CASCADE` if you intend to re-upgrade and recreate them, due to how Alembic handles ENUMs natively.
+
+## Authentication Security Foundation
+
+BlueHire implements a robust, production-ready security foundation using JSON Web Tokens (JWT) and Argon2 hashing.
+
+### Security Architecture
+- **Argon2 Password Hashing**: Passwords are mathematically hashed using `pwdlib` and Argon2, protecting against brute-force and rainbow table attacks.
+- **JWT Authentication Strategy**: API routes are secured via stateless Bearer tokens.
+- **Access Tokens**: Short-lived (15 minutes) tokens containing minimal claims (only `sub`, `type`, `iat`, `exp`).
+- **Refresh Tokens**: Long-lived (7 days) tokens containing a uniquely generated JWT ID (`jti`) for secure tracking and potential revocation.
+- **Custom Security Exceptions**: The security layer gracefully intercepts internal parser errors and raises sanitized `InvalidTokenError` and `InvalidTokenTypeError` exceptions.
+
+### Environment Variables Required
+The security foundation relies on the following environment variables:
+- `SECRET_KEY`: A cryptographically secure random string used to sign JWTs.
+- `ALGORITHM`: The JWT signing algorithm (defaults to `HS256`).
+- `ACCESS_TOKEN_EXPIRE_MINUTES`: Lifespan of access tokens.
+- `REFRESH_TOKEN_EXPIRE_DAYS`: Lifespan of refresh tokens.

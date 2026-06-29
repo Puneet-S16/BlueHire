@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.4.2] - 2026-06-30
+### Added
+- Security Foundation for Authentication architecture.
+- JWT Infrastructure for Access and Refresh tokens.
+- Argon2 Integration via pwdlib for password hashing.
+- Token Validation and payload verification logic.
+- Production Hardening with custom exception masking.
+
 ## [v0.3.0] - 2026-06-30
 ### Added
 - Alembic configuration for database migrations.
