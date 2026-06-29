@@ -92,3 +92,36 @@ The project uses Docker to provide a localized PostgreSQL database and pgAdmin i
 - **Database Name**: `bluehire`
 - **Username**: `postgres`
 - **Password**: `postgres`
+
+## Alembic & Database Migrations
+
+This project uses Alembic for database migrations, which allows us to safely modify the database schema over time without losing data.
+
+### Project Migration Workflow
+1. Modify SQLAlchemy models in `backend/models/`.
+2. Generate a new migration script based on your changes.
+3. Apply the migration to update the database.
+
+### How to Create Migrations
+To auto-generate a migration after changing your models, run:
+```bash
+cd backend
+alembic revision --autogenerate -m "Describe your changes"
+```
+
+### How to Apply Migrations
+To upgrade the database to the latest schema:
+```bash
+cd backend
+alembic upgrade head
+```
+
+### How to Rollback Migrations
+If you need to revert the last migration:
+```bash
+cd backend
+alembic downgrade -1
+```
+
+### Development Notes
+- When downgrading PostgreSQL databases, you may need to manually drop `ENUM` types using `DROP TYPE type_name CASCADE` if you intend to re-upgrade and recreate them, due to how Alembic handles ENUMs natively.

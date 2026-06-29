@@ -11,10 +11,11 @@
 - [x] pgAdmin
 - [x] Database Connectivity
 
-## Milestone 3 🚧 Alembic Migration
-- [ ] Alembic Setup
-- [ ] Initial Migration
-- [ ] Database Verification
+## Milestone 3 ✅ Alembic Migration
+- [x] Alembic Configuration
+- [x] Initial Migration
+- [x] Database Validation
+- [x] Rollback Testing
 
 ## Milestone 4 🔐 Authentication
 - [ ] JWT Authentication
