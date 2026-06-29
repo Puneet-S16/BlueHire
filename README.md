@@ -65,3 +65,30 @@ bluehire/
 Once the backend is running, you can access the interactive API documentation at:
 - Swagger UI: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
+
+## Docker Setup
+
+The project uses Docker to provide a localized PostgreSQL database and pgAdmin interface.
+
+### Prerequisites
+- **Docker Desktop**: Must be installed and running.
+- **WSL2 Requirement**: Ensure WSL2 backend is enabled in Docker Desktop settings for optimal performance on Windows.
+
+### Starting and Stopping Containers
+- **Start Containers**: Run `docker compose up -d` in the root directory.
+- **Stop Containers**: Run `docker compose down`.
+
+### Accessing pgAdmin
+1. Open your browser and navigate to `http://localhost:5050`.
+2. Login using the default development credentials:
+   - **Email**: `admin@bluehire.com`
+   - **Password**: `admin123`
+
+### Ports Used
+- **5432**: PostgreSQL Database
+- **5050**: pgAdmin Web Interface
+
+### PostgreSQL Database Details
+- **Database Name**: `bluehire`
+- **Username**: `postgres`
+- **Password**: `postgres`

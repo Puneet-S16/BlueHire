@@ -5,12 +5,18 @@
 - [x] SQLAlchemy Models
 - [x] Production Review
 
-## Milestone 2 🚧 Database
+## Milestone 2 ✅ Docker Infrastructure
+- [x] Docker Infrastructure
+- [x] PostgreSQL Container
+- [x] pgAdmin
+- [x] Database Connectivity
+
+## Milestone 3 🚧 Alembic Migration
 - [ ] Alembic Setup
 - [ ] Initial Migration
 - [ ] Database Verification
 
-## Milestone 3 🔐 Authentication
+## Milestone 4 🔐 Authentication
 - [ ] JWT Authentication
 - [ ] Signup API
 - [ ] Login API
@@ -18,37 +24,37 @@
 - [ ] Refresh Tokens
 - [ ] Role-based Authorization
 
-## Milestone 4 👤 User Profiles
+## Milestone 5 👤 User Profiles
 - [ ] Worker Profile
 - [ ] Employer Profile
 - [ ] Company Profile
 - [ ] Profile Update APIs
 - [ ] Document Upload
 
-## Milestone 5 💼 Job Marketplace
+## Milestone 6 💼 Job Marketplace
 - [ ] Job Posting
 - [ ] Job Search
 - [ ] Filters
 - [ ] Job Details
 - [ ] Save Jobs
 
-## Milestone 6 📄 Applications
+## Milestone 7 📄 Applications
 - [ ] Apply to Job
 - [ ] Application Status
 - [ ] Employer Review
 - [ ] Accept / Reject
 
-## Milestone 7 📊 Dashboards
+## Milestone 8 📊 Dashboards
 - [ ] Worker Dashboard
 - [ ] Employer Dashboard
 
-## Milestone 8 🤖 AI Features
+## Milestone 9 🤖 AI Features
 - [ ] Job Recommendation
 - [ ] Worker Recommendation
 - [ ] Resume Matching
 - [ ] AI Chat Assistant
 
-## Milestone 9 🚀 Deployment
+## Milestone 10 🚀 Deployment
 - [ ] Docker
 - [ ] CI/CD
 - [ ] Production Deployment
