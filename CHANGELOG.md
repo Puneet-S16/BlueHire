@@ -1,6 +1,16 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+
+## [v0.4.5] - 2026-06-30
+### Added
+- Authentication Service enforcing business logic without HTTP coupling.
+- Repository Pattern implementation for the User domain.
+- Authentication Router mapping REST endpoints securely to the service layer.
+- JWT Dependencies for extracting and decoding tokens automatically.
+- Protected Endpoints (`/auth/me`, `/auth/change-password`) ensuring secure authenticated interactions.
+- OpenAPI Improvements mapping domain exceptions into meaningful HTTP status codes.
+
 ## [v0.4.3] - 2026-06-30
 ### Added
 - Authentication Schemas using Pydantic V2 (`SignupRequest`, `LoginRequest`, `TokenResponse`, etc.).

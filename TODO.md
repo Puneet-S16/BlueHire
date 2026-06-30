@@ -21,12 +21,19 @@
 - [x] Authentication Architecture
 - [x] Security Foundation
 - [x] Authentication Schemas
-- [ ] Authentication Service
-- [ ] Signup API
-- [ ] Login API
-- [ ] Role-based Authorization
+- [x] Authentication Service
+- [x] Authentication Router
+- [x] Authorization Dependencies
 
-## Milestone 5 👤 User Profiles
+## Milestone 5 🧪 Authentication End-to-End Testing
+- [ ] Pytest Configuration
+- [ ] Database Fixtures
+- [ ] Signup API Tests
+- [ ] Login API Tests
+- [ ] Token Rotation Tests
+- [ ] Protected Route Tests
+
+## Milestone 6 👤 User Profiles
 - [ ] Worker Profile
 - [ ] Employer Profile
 - [ ] Company Profile

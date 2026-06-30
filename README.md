@@ -160,3 +160,20 @@ The authentication system employs Pydantic V2 schemas to enforce strict data val
 - `RefreshTokenRequest`: Validates refresh token payloads.
 - `UserResponse`: Defines the public profile format, purposefully omitting sensitive fields like `password_hash`.
 - `ChangePasswordRequest`: Validates authenticated password resets and enforces strength and confirmation match checks.
+
+## Authentication Module
+
+The Authentication Module completes the backend security pipeline by integrating the data access layer, business logic layer, and HTTP routing securely.
+
+### Architecture
+- **Repository Pattern**: Extracted all database reads and writes to `UserRepository`.
+- **Service Layer**: Placed all complex registration, login, and rotation logic in `AuthService` away from HTTP concerns.
+- **Dependency Injection**: Seamlessly resolved the database session, repository, service, and current user models via FastAPI `Depends`.
+
+### API Endpoints
+- `POST /api/v1/auth/signup`: Accepts user credentials and creates a new account.
+- `POST /api/v1/auth/login`: Authenticates credentials to dispense access and refresh JWTs.
+- `POST /api/v1/auth/refresh`: Consumes a valid refresh token and performs token rotation securely.
+- `POST /api/v1/auth/logout`: Revokes active refresh token sessions.
+- `POST /api/v1/auth/change-password` **(Protected)**: Verifies the current active password hash before securely enforcing the new one.
+- `GET /api/v1/auth/me` **(Protected)**: Unwraps the bearer token to automatically return the current active `UserResponse` payload.
