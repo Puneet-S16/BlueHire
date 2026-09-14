@@ -2,41 +2,56 @@
 
 All notable changes to this project will be documented in this file.
 
+## v0.5.0
+### Added
+- Company Management Module
+- Company CRUD APIs
+- Company Repository Layer
+- Company Service Layer
+- Company Schemas
+- Domain Exceptions
+- Validation Rules
+
+### Notes
+- Company ownership handled through Employer relationships.
+
 ## [v0.4.5] - 2026-06-30
 ### Added
-- Authentication Service enforcing business logic without HTTP coupling.
-- Repository Pattern implementation for the User domain.
-- Authentication Router mapping REST endpoints securely to the service layer.
-- JWT Dependencies for extracting and decoding tokens automatically.
-- Protected Endpoints (`/auth/me`, `/auth/change-password`) ensuring secure authenticated interactions.
-- OpenAPI Improvements mapping domain exceptions into meaningful HTTP status codes.
+- **Authentication Service**: Enforcing business logic without HTTP coupling.
+- **Repository Pattern**: Extracted data access layer for the User domain.
+- **Authentication Router**: REST API mapping securely to the service layer.
+- **JWT Dependencies**: OAuth2 DI for extracting and decoding tokens automatically.
+- **Protected Endpoints**: `/auth/me`, `/auth/change-password` secured by Bearer token parsing.
+- **Exception Mapping**: Internal domain exceptions correctly translated to HTTP status codes.
 
 ## [v0.4.3] - 2026-06-30
 ### Added
-- Authentication Schemas using Pydantic V2 (`SignupRequest`, `LoginRequest`, `TokenResponse`, etc.).
-- Robust validation rules for emails and strict password policies.
-- Shared `RoleEnum` integrated directly into schemas for end-to-end consistency.
+- **Pydantic Schemas**: Created `SignupRequest`, `LoginRequest`, `TokenResponse`, etc.
+- **Complex Validation**: Implemented strict password policies and standard RFC email validation.
+- **Shared Enums**: Integrated `RoleEnum` directly into API schemas for DB consistency.
 
 ## [v0.4.2] - 2026-06-30
 ### Added
-- Security Foundation for Authentication architecture.
-- JWT Infrastructure for Access and Refresh tokens.
-- Argon2 Integration via pwdlib for password hashing.
-- Token Validation and payload verification logic.
-- Production Hardening with custom exception masking.
+- **Security Foundation**: JWT generation/decoding architecture.
+- **Password Hashing**: Implemented Argon2 via `pwdlib`.
+- **Custom Exceptions**: Defined `InvalidTokenError` to mask cryptographic internal errors.
+- **Configuration**: Added `.env` auth variables (`SECRET_KEY`, `ALGORITHM`).
 
 ## [v0.3.0] - 2026-06-30
 ### Added
-- Alembic configuration for database migrations.
-- Initial schema migration auto-generated from SQLAlchemy models.
-- Database validation setup and testing.
-- Rollback verification and PostgreSQL integration.
+- **Alembic Environment**: Configured `alembic.ini` and environment for SQLAlchemy.
+- **Initial Migration**: Auto-generated the full relational schema.
+- **Validation**: Tested rollback and upgrade reliability.
 
 ## [v0.2.0] - 2026-06-30
 ### Added
-- Docker Compose setup for localized infrastructure.
-- PostgreSQL database container.
-- pgAdmin container for database management.
-- Docker Network configuration for container communication.
-- Docker Volumes for data persistence.
-- Health Checks for ensuring PostgreSQL is ready before accepting connections.
+- **Docker Infrastructure**: `docker-compose.yml` for unified development.
+- **PostgreSQL**: Local isolated database.
+- **pgAdmin**: GUI for database exploration and management.
+- **Networking/Volumes**: Persistent volumes and mapped ports for safe container restarts.
+
+## [v0.1.0] - 2026-06-30
+### Added
+- **Database Architecture**: Core base setup.
+- **SQLAlchemy Models**: Created models for Users, Profiles (Worker/Employer/Company), Jobs, Reviews, Documents, and Experiences.
+- **Relationships**: Configured one-to-one and one-to-many ORM mappings.

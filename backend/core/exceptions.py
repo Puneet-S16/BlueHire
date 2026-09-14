@@ -20,3 +20,15 @@ class RefreshTokenNotFoundError(Exception):
     def __init__(self, message="Refresh token not found or revoked"):
         self.message = message
         super().__init__(self.message)
+
+
+class CompanyAlreadyExistsError(Exception):
+    def __init__(self, message="Company already exists"):
+        self.message = message
+        super().__init__(self.message)
+
+
+class CompanyNotFoundError(Exception):
+    def __init__(self, message="Company not found"):
+        self.message = message
+        super().__init__(self.message)
