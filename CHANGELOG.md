@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.6.0] - 2026-10-02
+### Added
+- Employer & Worker Profile Modules
+- Job & Applications Modules
+- Resume / Document Module
+- Skills & Categories Modules
+- Education & Experience Modules
+- Job Discovery & Search Module (Marketplace complete)
 ## v0.5.0
 ### Added
 - Company Management Module
@@ -55,3 +63,4 @@ All notable changes to this project will be documented in this file.
 - **Database Architecture**: Core base setup.
 - **SQLAlchemy Models**: Created models for Users, Profiles (Worker/Employer/Company), Jobs, Reviews, Documents, and Experiences.
 - **Relationships**: Configured one-to-one and one-to-many ORM mappings.
+
