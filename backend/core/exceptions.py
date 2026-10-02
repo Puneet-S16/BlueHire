@@ -102,3 +102,28 @@ class InvalidDocumentOwnershipError(Exception):
     def __init__(self, message="You do not have permission to modify this document"):
         self.message = message
         super().__init__(self.message)
+
+class SkillAlreadyExistsError(Exception):
+    def __init__(self, message="Skill already exists"):
+        self.message = message
+        super().__init__(self.message)
+
+class SkillNotFoundError(Exception):
+    def __init__(self, message="Skill not found"):
+        self.message = message
+        super().__init__(self.message)
+
+class WorkerSkillAlreadyExistsError(Exception):
+    def __init__(self, message="Worker already has this skill"):
+        self.message = message
+        super().__init__(self.message)
+
+class WorkerSkillNotFoundError(Exception):
+    def __init__(self, message="Worker does not have this skill"):
+        self.message = message
+        super().__init__(self.message)
+
+class CategoryNotFoundError(Exception):
+    def __init__(self, message="Category not found"):
+        self.message = message
+        super().__init__(self.message)
