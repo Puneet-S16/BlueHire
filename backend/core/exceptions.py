@@ -92,3 +92,13 @@ class JobNotOpenError(Exception):
     def __init__(self, message="This job is not open for applications"):
         self.message = message
         super().__init__(self.message)
+
+class DocumentNotFoundError(Exception):
+    def __init__(self, message="Document not found"):
+        self.message = message
+        super().__init__(self.message)
+
+class InvalidDocumentOwnershipError(Exception):
+    def __init__(self, message="You do not have permission to modify this document"):
+        self.message = message
+        super().__init__(self.message)
