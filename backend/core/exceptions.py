@@ -62,3 +62,13 @@ class InvalidWorkerRoleError(Exception):
     def __init__(self, message="User does not have the WORKER role"):
         self.message = message
         super().__init__(self.message)
+
+class JobNotFoundError(Exception):
+    def __init__(self, message="Job not found"):
+        self.message = message
+        super().__init__(self.message)
+
+class InvalidJobOwnershipError(Exception):
+    def __init__(self, message="You do not have permission to modify this job"):
+        self.message = message
+        super().__init__(self.message)
