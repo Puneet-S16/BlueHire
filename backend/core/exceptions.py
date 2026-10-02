@@ -32,3 +32,18 @@ class CompanyNotFoundError(Exception):
     def __init__(self, message="Company not found"):
         self.message = message
         super().__init__(self.message)
+
+class EmployerAlreadyExistsError(Exception):
+    def __init__(self, message="Employer profile already exists"):
+        self.message = message
+        super().__init__(self.message)
+
+class EmployerNotFoundError(Exception):
+    def __init__(self, message="Employer profile not found"):
+        self.message = message
+        super().__init__(self.message)
+
+class InvalidEmployerRoleError(Exception):
+    def __init__(self, message="User does not have the EMPLOYER role"):
+        self.message = message
+        super().__init__(self.message)
