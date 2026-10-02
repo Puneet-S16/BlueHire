@@ -72,3 +72,23 @@ class InvalidJobOwnershipError(Exception):
     def __init__(self, message="You do not have permission to modify this job"):
         self.message = message
         super().__init__(self.message)
+
+class ApplicationAlreadyExistsError(Exception):
+    def __init__(self, message="You have already applied to this job"):
+        self.message = message
+        super().__init__(self.message)
+
+class ApplicationNotFoundError(Exception):
+    def __init__(self, message="Application not found"):
+        self.message = message
+        super().__init__(self.message)
+
+class InvalidApplicationOwnershipError(Exception):
+    def __init__(self, message="You do not have permission to modify this application"):
+        self.message = message
+        super().__init__(self.message)
+
+class JobNotOpenError(Exception):
+    def __init__(self, message="This job is not open for applications"):
+        self.message = message
+        super().__init__(self.message)
