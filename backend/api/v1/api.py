@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from api.v1.endpoints import health
-from api.routes import auth, company, employer, worker, job, application, document, skill, education
+from api.routes import auth, company, employer, worker, job, application, document, skill, education, experience
 
 api_router = APIRouter()
 api_router.include_router(health.router, tags=["health"])
@@ -13,3 +13,4 @@ api_router.include_router(application.router, prefix="/applications", tags=["app
 api_router.include_router(document.router, prefix="/documents", tags=["documents"])
 api_router.include_router(skill.router, prefix="/skills", tags=["skills"])
 api_router.include_router(education.router, prefix="/education", tags=["education"])
+api_router.include_router(experience.router, prefix="/experience", tags=["experience"])

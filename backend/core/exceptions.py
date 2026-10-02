@@ -137,3 +137,13 @@ class InvalidEducationOwnershipError(Exception):
     def __init__(self, message="You do not have permission to modify this education entry"):
         self.message = message
         super().__init__(self.message)
+
+class ExperienceNotFoundError(Exception):
+    def __init__(self, message="Experience entry not found"):
+        self.message = message
+        super().__init__(self.message)
+
+class InvalidExperienceOwnershipError(Exception):
+    def __init__(self, message="You do not have permission to modify this experience entry"):
+        self.message = message
+        super().__init__(self.message)
