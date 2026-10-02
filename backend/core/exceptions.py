@@ -147,3 +147,8 @@ class InvalidExperienceOwnershipError(Exception):
     def __init__(self, message="You do not have permission to modify this experience entry"):
         self.message = message
         super().__init__(self.message)
+
+class CategoryAlreadyExistsError(Exception):
+    def __init__(self, message="Category already exists"):
+        self.message = message
+        super().__init__(self.message)
