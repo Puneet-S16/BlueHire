@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.6.1] - 2026-10-02
+### Added
+- Saved Jobs Module
+- Job Recommendation Engine (SQL-based Scoring)
+- Cross-field compatibility checking
 ## [v0.6.0] - 2026-10-02
 ### Added
 - Employer & Worker Profile Modules
@@ -63,4 +68,5 @@ All notable changes to this project will be documented in this file.
 - **Database Architecture**: Core base setup.
 - **SQLAlchemy Models**: Created models for Users, Profiles (Worker/Employer/Company), Jobs, Reviews, Documents, and Experiences.
 - **Relationships**: Configured one-to-one and one-to-many ORM mappings.
+
 

@@ -1,7 +1,7 @@
 # BlueHire Project Status
 
 ## 📊 Overview
-- **Overall Completion**: ~70%
+- **Overall Completion**: ~75%
 - **Project Health**: Excellent
 
 ## ✅ Completed Modules
@@ -18,12 +18,14 @@
 11. **Skills & Categories Modules**: Complete.
 12. **Education & Experience Modules**: Complete.
 13. **Job Search & Discovery Module**: Complete.
+14. **Dashboard & Notifications Module**: Complete.
+15. **Saved Jobs & Recommendations Module**: Complete.
 
 ## 🔄 Current Module
-- **Job Search & Discovery Module** (Just Completed)
+- **Saved Jobs & Recommendations Module** (Just Completed)
 
 ## ⏭️ Next Module
-- **Dashboards & Notifications Module**: Aggregation APIs for Employer/Worker dashboards.
+- **Messaging / Chat Module**: Core communication channels between Employer and Worker.
 
 ## ⚠️ Known Limitations
 - **Refresh Token Storage**: Currently, refresh tokens are generated and cryptographically verified, but their `jti` is not tracked in a stateful database table, meaning they cannot be explicitly revoked before expiration.

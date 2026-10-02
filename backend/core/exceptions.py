@@ -162,3 +162,13 @@ class InvalidNotificationOwnershipError(Exception):
     def __init__(self, message="You do not have permission to access this notification"):
         self.message = message
         super().__init__(self.message)
+
+class SavedJobAlreadyExistsError(Exception):
+    def __init__(self, message="Job is already saved"):
+        self.message = message
+        super().__init__(self.message)
+
+class SavedJobNotFoundError(Exception):
+    def __init__(self, message="Saved job not found"):
+        self.message = message
+        super().__init__(self.message)
