@@ -47,3 +47,18 @@ class InvalidEmployerRoleError(Exception):
     def __init__(self, message="User does not have the EMPLOYER role"):
         self.message = message
         super().__init__(self.message)
+
+class WorkerAlreadyExistsError(Exception):
+    def __init__(self, message="Worker profile already exists"):
+        self.message = message
+        super().__init__(self.message)
+
+class WorkerNotFoundError(Exception):
+    def __init__(self, message="Worker profile not found"):
+        self.message = message
+        super().__init__(self.message)
+
+class InvalidWorkerRoleError(Exception):
+    def __init__(self, message="User does not have the WORKER role"):
+        self.message = message
+        super().__init__(self.message)
