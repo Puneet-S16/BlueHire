@@ -28,11 +28,15 @@ class Education(TimestampMixin, Base):
 
     id: Mapped[uuid.UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     worker_id: Mapped[uuid.UUID] = mapped_column(PGUUID(as_uuid=True), ForeignKey("workers.user_id", ondelete="CASCADE"), index=True, nullable=False)
-    institution: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    degree_certification: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
-    year_completed: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    institution_name: Mapped[str] = mapped_column(String(255), nullable=False)
+    degree: Mapped[str] = mapped_column(String(150), nullable=False)
+    field_of_study: Mapped[Optional[str]] = mapped_column(String(150), nullable=True)
+    start_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    end_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
+    grade: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     worker: Mapped["Worker"] = relationship("Worker", back_populates="education")
 
     def __repr__(self) -> str:
-        return f"<Education {self.degree_certification} at {self.institution}>"
+        return f"<Education {self.degree} at {self.institution_name}>"

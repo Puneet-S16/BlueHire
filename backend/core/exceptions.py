@@ -127,3 +127,13 @@ class CategoryNotFoundError(Exception):
     def __init__(self, message="Category not found"):
         self.message = message
         super().__init__(self.message)
+
+class EducationNotFoundError(Exception):
+    def __init__(self, message="Education entry not found"):
+        self.message = message
+        super().__init__(self.message)
+
+class InvalidEducationOwnershipError(Exception):
+    def __init__(self, message="You do not have permission to modify this education entry"):
+        self.message = message
+        super().__init__(self.message)
