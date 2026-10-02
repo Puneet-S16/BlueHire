@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [v0.6.2] - 2026-10-02
 ### Added
-- Messaging & Communication Module
-- In-app Conversations between Employers and Workers
-- Real-time Unread Message Counters injected into Dashboards
+- **Conversations Module**: Endpoints mapping 1:1 job application chats.
+- **Messaging Module**: Secure, paginated threads between Employers and Workers.
+- **Dashboard Unread Message Integration**: Aggregated count injections preventing N+1 queries.
+- **Notification Integration**: Cross-module unread status delivery.
 ## [v0.6.1] - 2026-10-02
 ### Added
 - Saved Jobs Module

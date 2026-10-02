@@ -18,81 +18,58 @@
 - [x] Initial Auto-generation
 - [x] Rollback & Upgrade Verification
 
-### Authentication Module
-- [x] Security Foundation (Argon2, JWT)
-- [x] Pydantic V2 Schemas (Signup, Login, Token, Reset)
-- [x] UserRepository Pattern
-- [x] AuthService Business Logic
-- [x] FastAPI API Routers & Dependency Injection
-
-### Company Module
-- [x] Company Schemas
-- [x] Company Repository
-- [x] Company Service
-- [x] Company Router
-- [x] Domain Exceptions & Validation
-
----
-
-## ⏳ In Progress
-
-### Employer Module
-- [ ] Employer Profile API
-- [ ] Link Employer to Company
-
----
-
-## 📅 Upcoming Modules
-
-- Worker Profile Module
-- Document Upload Module
-- Jobs Module
-- Applications Module
-- Dashboard Module
-- Notifications Module
-- AI Recommendation Module
-- Deployment & CI/CD
+### Core Platform
+- [x] Authentication Module (JWT, Argon2)
+- [x] Company Module (CRUD)
+- [x] Employer Profile API
+- [x] Worker Profile API (Bio, City, etc.)
+- [x] Worker Taxonomy (Skills, Categories, Education, Experience)
+- [x] Document / Resume Upload Module
 
 ### Job Marketplace
-- [ ] Job Posting API
-- [ ] Job Search API
-- [ ] Advanced Filters (Location, Salary, Role)
-- [ ] Job Details API
-- [ ] Save/Bookmark Jobs API
+- [x] Job Posting API
+- [x] Job Search API & Filters (Pagination, Sorting)
+- [x] Job Details API
+- [x] Save/Bookmark Jobs API
+- [x] Basic SQL-driven Job Recommendation Engine
 
 ### Applications
-- [ ] Apply to Job API
-- [ ] Application Status Tracking
-- [ ] Employer Application Review
-- [ ] Accept/Reject Workflows
+- [x] Apply to Job API
+- [x] Application Status Tracking
+- [x] Employer Application Review (Accept/Reject Workflows)
 
-### Notifications
-- [ ] In-App Notification System
-- [ ] Email Triggers (Future)
-
-### Dashboard
-- [ ] Worker Analytics & Dashboard
-- [ ] Employer Analytics & Dashboard
+### Engagement
+- [x] Dashboards (Worker & Employer Aggregations)
+- [x] In-App Notification System
+- [x] Messaging & Conversations (1:1 per Application)
 
 ---
 
-## 🚀 Future Vision
+## 🔄 In Progress
 
-### Search & Discovery
-- [ ] Semantic/Vector Search Implementation
-- [ ] Elasticsearch or pgvector integration
+### AI Matching Engine (Phase 9.0)
+- [ ] Resume Parsing
+- [ ] Semantic/Vector Search Implementation (pgvector)
+- [ ] AI Job/Worker Recommendation algorithms
 
-### AI Recommendation
-- [ ] AI Job Recommendation Engine
-- [ ] Worker matching algorithms
-- [ ] AI Resume Parsing & Chat Assistant
+---
 
-### Deployment & CI/CD
-- [ ] Production Dockerfile optimization
-- [ ] GitHub Actions pipelines
-- [ ] AWS / Vercel Cloud Deployment
-- [ ] Production Database migration
+## 📅 Remaining Modules
 
-### Advanced Testing
+### Advanced Connectivity
+- [ ] Real-time Messaging (WebSockets)
+- [ ] Live Push Notifications
+
+### Admin & Operations
+- [ ] Admin APIs & Content Moderation
+- [ ] Analytics & Reporting
+- [ ] Rate Limiting (`slowapi`)
+- [ ] Logging & Monitoring
+
+### Deployment & Testing
+- [ ] Pytest Backend Suite
 - [ ] Frontend E2E testing (Playwright/Cypress)
 - [ ] Load Testing (Locust)
+- [ ] GitHub Actions pipelines
+- [ ] AWS / Vercel Cloud Deployment
+- [ ] Production Database bulk migration
