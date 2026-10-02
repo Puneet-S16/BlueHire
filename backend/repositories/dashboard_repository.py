@@ -1,10 +1,13 @@
 import uuid
 from typing import Dict, Any, List
 from sqlalchemy.orm import Session
-from sqlalchemy import select, func
+from sqlalchemy import select, func, or_
 from models.application import Application
 from models.job import Job
 from models.enums import ApplicationStatusEnum, JobStatusEnum
+from models.notification import Notification
+from models.message import Message
+from models.conversation import Conversation
 
 class DashboardRepository:
     def __init__(self, db: Session):
@@ -37,15 +40,33 @@ class DashboardRepository:
             ).scalars().all()
         )
 
+        # Unread counts
+        unread_notifications = self.db.execute(
+            select(func.count(Notification.id))
+            .where(Notification.user_id == worker_id, Notification.is_read == False)
+        ).scalar() or 0
+
+        unread_messages = self.db.execute(
+            select(func.count(Message.id))
+            .join(Conversation, Conversation.id == Message.conversation_id)
+            .where(
+                Conversation.worker_id == worker_id,
+                Message.sender_id != worker_id,
+                Message.is_read == False
+            )
+        ).scalar() or 0
+
         return {
             "total_applications": total_apps,
             "active_applications": active_apps,
             "shortlisted_count": shortlisted,
             "rejected_count": rejected,
-            "recent_applications": recent_apps
+            "recent_applications": recent_apps,
+            "unread_notifications": unread_notifications,
+            "unread_messages": unread_messages
         }
 
-    def get_employer_dashboard_stats(self, company_id: uuid.UUID) -> Dict[str, Any]:
+    def get_employer_dashboard_stats(self, company_id: uuid.UUID, employer_id: uuid.UUID) -> Dict[str, Any]:
         # Aggregate jobs
         job_status_counts = dict(
             self.db.execute(
@@ -85,10 +106,22 @@ class DashboardRepository:
             ).scalars().all()
         )
 
+        # Unread messages
+        unread_messages = self.db.execute(
+            select(func.count(Message.id))
+            .join(Conversation, Conversation.id == Message.conversation_id)
+            .where(
+                Conversation.employer_id == employer_id,
+                Message.sender_id != employer_id,
+                Message.is_read == False
+            )
+        ).scalar() or 0
+
         return {
             "total_jobs_posted": total_jobs,
             "active_jobs": active_jobs,
             "total_applications_received": total_apps,
             "recent_applications": recent_apps,
-            "recent_jobs": recent_jobs
+            "recent_jobs": recent_jobs,
+            "unread_messages": unread_messages
         }

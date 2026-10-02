@@ -172,3 +172,28 @@ class SavedJobNotFoundError(Exception):
     def __init__(self, message="Saved job not found"):
         self.message = message
         super().__init__(self.message)
+
+class ConversationAlreadyExistsError(Exception):
+    def __init__(self, message="Conversation already exists"):
+        self.message = message
+        super().__init__(self.message)
+
+class ConversationNotFoundError(Exception):
+    def __init__(self, message="Conversation not found"):
+        self.message = message
+        super().__init__(self.message)
+
+class InvalidConversationAccessError(Exception):
+    def __init__(self, message="You do not have access to this conversation"):
+        self.message = message
+        super().__init__(self.message)
+
+class MessageNotFoundError(Exception):
+    def __init__(self, message="Message not found"):
+        self.message = message
+        super().__init__(self.message)
+
+class InvalidMessageAccessError(Exception):
+    def __init__(self, message="You do not have access to this message"):
+        self.message = message
+        super().__init__(self.message)

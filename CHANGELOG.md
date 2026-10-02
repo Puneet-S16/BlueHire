@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.6.2] - 2026-10-02
+### Added
+- Messaging & Communication Module
+- In-app Conversations between Employers and Workers
+- Real-time Unread Message Counters injected into Dashboards
 ## [v0.6.1] - 2026-10-02
 ### Added
 - Saved Jobs Module
@@ -68,5 +73,6 @@ All notable changes to this project will be documented in this file.
 - **Database Architecture**: Core base setup.
 - **SQLAlchemy Models**: Created models for Users, Profiles (Worker/Employer/Company), Jobs, Reviews, Documents, and Experiences.
 - **Relationships**: Configured one-to-one and one-to-many ORM mappings.
+
 
 

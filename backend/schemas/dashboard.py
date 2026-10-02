@@ -9,6 +9,8 @@ class WorkerDashboardResponse(BaseModel):
     shortlisted_count: int
     rejected_count: int
     recent_applications: List[ApplicationResponse]
+    unread_notifications: int
+    unread_messages: int
 
 class EmployerDashboardResponse(BaseModel):
     total_jobs_posted: int
@@ -16,3 +18,4 @@ class EmployerDashboardResponse(BaseModel):
     total_applications_received: int
     recent_applications: List[ApplicationResponse]
     recent_jobs: List[JobResponse]
+    unread_messages: int

@@ -30,4 +30,4 @@ class DashboardService:
         if not employer:
             raise EmployerNotFoundError("Employer profile not found")
             
-        return self.dashboard_repo.get_employer_dashboard_stats(employer.company_id)
+        return self.dashboard_repo.get_employer_dashboard_stats(employer.company_id, user.id)
