@@ -152,3 +152,13 @@ class CategoryAlreadyExistsError(Exception):
     def __init__(self, message="Category already exists"):
         self.message = message
         super().__init__(self.message)
+
+class NotificationNotFoundError(Exception):
+    def __init__(self, message="Notification not found"):
+        self.message = message
+        super().__init__(self.message)
+
+class InvalidNotificationOwnershipError(Exception):
+    def __init__(self, message="You do not have permission to access this notification"):
+        self.message = message
+        super().__init__(self.message)

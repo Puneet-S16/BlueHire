@@ -12,11 +12,12 @@ class Notification(TimestampMixin, Base):
     id: Mapped[uuid.UUID] = mapped_column(PGUUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), index=True, nullable=False)
     
-    type: Mapped[str] = mapped_column(String(50), nullable=False)
-    content: Mapped[str] = mapped_column(Text, nullable=False)
+    notification_type: Mapped[str] = mapped_column(String(50), nullable=False)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    message: Mapped[str] = mapped_column(Text, nullable=False)
     is_read: Mapped[bool] = mapped_column(Boolean, default=False, index=True, server_default='false')
 
     user: Mapped["User"] = relationship("User", back_populates="notifications")
 
     def __repr__(self) -> str:
-        return f"<Notification User: {self.user_id} Type: {self.type}>"
+        return f"<Notification User: {self.user_id} Type: {self.notification_type}>"
