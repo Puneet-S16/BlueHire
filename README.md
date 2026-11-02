@@ -79,19 +79,28 @@ The project uses Docker to provide a localized PostgreSQL database and pgAdmin i
 - **Stop Containers**: Run `docker compose down`.
 
 ### Accessing pgAdmin
-1. Open your browser and navigate to `http://localhost:5050`.
-2. Login using the default development credentials:
-   - **Email**: `admin@bluehire.com`
-   - **Password**: `admin123`
+1. Copy `backend/.env.example` to `.env` and `docker-compose`/root `.env.example` to `.env.docker` in the project root, then set real values for every `CHANGE_ME` placeholder.
+2. Start the stack: `docker compose up -d`.
+3. Open your browser and navigate to `http://localhost:5050`.
+4. Login using the credentials you set in `.env.docker` (`PGADMIN_DEFAULT_EMAIL` / `PGADMIN_DEFAULT_PASSWORD`).
 
 ### Ports Used
 - **5432**: PostgreSQL Database
 - **5050**: pgAdmin Web Interface
 
 ### PostgreSQL Database Details
-- **Database Name**: `bluehire`
-- **Username**: `postgres`
-- **Password**: `postgres`
+- **Database Name**: `bluehire` (override via `POSTGRES_DB`)
+- **Username**: `postgres` (override via `POSTGRES_USER`)
+- **Password**: set via `POSTGRES_PASSWORD` (never commit this value)
+
+### Backend environment variables
+Copy `backend/.env.example` to `backend/.env` and set a strong `SECRET_KEY` (at least 32 characters):
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+Never use the `CHANGE_ME` placeholder in production.
 
 ## Alembic & Database Migrations
 
