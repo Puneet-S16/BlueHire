@@ -1,13 +1,15 @@
 import uuid
-from typing import Dict, Any, List
-from sqlalchemy.orm import Session
-from sqlalchemy import select, func, or_
+from typing import Any, Dict, List
+
 from models.application import Application
-from models.job import Job
-from models.enums import ApplicationStatusEnum, JobStatusEnum
-from models.notification import Notification
-from models.message import Message
 from models.conversation import Conversation
+from models.enums import ApplicationStatusEnum, JobStatusEnum
+from models.job import Job
+from models.message import Message
+from models.notification import Notification
+from sqlalchemy import func, or_, select
+from sqlalchemy.orm import Session
+
 
 class DashboardRepository:
     def __init__(self, db: Session):
@@ -24,9 +26,11 @@ class DashboardRepository:
         )
 
         total_apps = sum(status_counts.values())
-        
+
         # Consider PENDING and IN_REVIEW as active
-        active_apps = status_counts.get(ApplicationStatusEnum.PENDING, 0) + status_counts.get(ApplicationStatusEnum.IN_REVIEW, 0)
+        active_apps = status_counts.get(ApplicationStatusEnum.PENDING, 0) + status_counts.get(
+            ApplicationStatusEnum.IN_REVIEW, 0
+        )
         shortlisted = status_counts.get(ApplicationStatusEnum.SHORTLISTED, 0)
         rejected = status_counts.get(ApplicationStatusEnum.REJECTED, 0)
 
@@ -37,24 +41,33 @@ class DashboardRepository:
                 .where(Application.worker_id == worker_id)
                 .order_by(Application.created_at.desc())
                 .limit(5)
-            ).scalars().all()
+            )
+            .scalars()
+            .all()
         )
 
         # Unread counts
-        unread_notifications = self.db.execute(
-            select(func.count(Notification.id))
-            .where(Notification.user_id == worker_id, Notification.is_read == False)
-        ).scalar() or 0
+        unread_notifications = (
+            self.db.execute(
+                select(func.count(Notification.id)).where(
+                    Notification.user_id == worker_id, not Notification.is_read
+                )
+            ).scalar()
+            or 0
+        )
 
-        unread_messages = self.db.execute(
-            select(func.count(Message.id))
-            .join(Conversation, Conversation.id == Message.conversation_id)
-            .where(
-                Conversation.worker_id == worker_id,
-                Message.sender_id != worker_id,
-                Message.is_read == False
-            )
-        ).scalar() or 0
+        unread_messages = (
+            self.db.execute(
+                select(func.count(Message.id))
+                .join(Conversation, Conversation.id == Message.conversation_id)
+                .where(
+                    Conversation.worker_id == worker_id,
+                    Message.sender_id != worker_id,
+                    not Message.is_read,
+                )
+            ).scalar()
+            or 0
+        )
 
         return {
             "total_applications": total_apps,
@@ -63,10 +76,12 @@ class DashboardRepository:
             "rejected_count": rejected,
             "recent_applications": recent_apps,
             "unread_notifications": unread_notifications,
-            "unread_messages": unread_messages
+            "unread_messages": unread_messages,
         }
 
-    def get_employer_dashboard_stats(self, company_id: uuid.UUID, employer_id: uuid.UUID) -> Dict[str, Any]:
+    def get_employer_dashboard_stats(
+        self, company_id: uuid.UUID, employer_id: uuid.UUID
+    ) -> Dict[str, Any]:
         # Aggregate jobs
         job_status_counts = dict(
             self.db.execute(
@@ -79,11 +94,14 @@ class DashboardRepository:
         active_jobs = job_status_counts.get(JobStatusEnum.ACTIVE, 0)
 
         # Total applications received for this company's jobs
-        total_apps = self.db.execute(
-            select(func.count(Application.id))
-            .join(Job, Job.id == Application.job_id)
-            .where(Job.company_id == company_id)
-        ).scalar() or 0
+        total_apps = (
+            self.db.execute(
+                select(func.count(Application.id))
+                .join(Job, Job.id == Application.job_id)
+                .where(Job.company_id == company_id)
+            ).scalar()
+            or 0
+        )
 
         # Recent jobs
         recent_jobs = list(
@@ -92,7 +110,9 @@ class DashboardRepository:
                 .where(Job.company_id == company_id)
                 .order_by(Job.created_at.desc())
                 .limit(5)
-            ).scalars().all()
+            )
+            .scalars()
+            .all()
         )
 
         # Recent applications
@@ -103,19 +123,24 @@ class DashboardRepository:
                 .where(Job.company_id == company_id)
                 .order_by(Application.created_at.desc())
                 .limit(5)
-            ).scalars().all()
+            )
+            .scalars()
+            .all()
         )
 
         # Unread messages
-        unread_messages = self.db.execute(
-            select(func.count(Message.id))
-            .join(Conversation, Conversation.id == Message.conversation_id)
-            .where(
-                Conversation.employer_id == employer_id,
-                Message.sender_id != employer_id,
-                Message.is_read == False
-            )
-        ).scalar() or 0
+        unread_messages = (
+            self.db.execute(
+                select(func.count(Message.id))
+                .join(Conversation, Conversation.id == Message.conversation_id)
+                .where(
+                    Conversation.employer_id == employer_id,
+                    Message.sender_id != employer_id,
+                    not Message.is_read,
+                )
+            ).scalar()
+            or 0
+        )
 
         return {
             "total_jobs_posted": total_jobs,
@@ -123,5 +148,5 @@ class DashboardRepository:
             "total_applications_received": total_apps,
             "recent_applications": recent_apps,
             "recent_jobs": recent_jobs,
-            "unread_messages": unread_messages
+            "unread_messages": unread_messages,
         }

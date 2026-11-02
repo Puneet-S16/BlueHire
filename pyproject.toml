@@ -27,6 +27,12 @@ unfixable = [
 # conftest.py imports are intentionally re-exported for test modules via pytest
 # fixtures; they are not "unused" in the conventional sense.
 "backend/tests/conftest.py" = ["F401"]
+# SQLAlchemy string forward references (e.g. Mapped["Job"]) are valid patterns
+# that ruff's F821 does not understand. These are defined in model files only.
+"backend/models/*.py" = ["F821"]
+# alembic/env.py follows the standard Alembic template pattern where imports
+# appear after sys.path manipulation; E402 is expected there.
+"backend/alembic/env.py" = ["E402"]
 
 [tool.ruff.format]
 quote-style = "double"
