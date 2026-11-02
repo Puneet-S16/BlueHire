@@ -1,10 +1,10 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from api.v1.api import api_router
 from core.config import settings
 from core.rate_limit import limiter
-from api.v1.api import api_router
-from slowapi.errors import RateLimitExceeded
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 app = FastAPI(
     title=settings.PROJECT_NAME,

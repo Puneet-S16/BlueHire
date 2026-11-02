@@ -1,27 +1,27 @@
 import uuid
 from datetime import datetime, timezone
-from typing import Dict, Any
+from typing import Any, Dict
 
+from core.config import settings
+from core.exceptions import (
+    DuplicateEmailError,
+    InactiveUserError,
+    InvalidCredentialsError,
+    RefreshTokenNotFoundError,
+)
 from core.security import (
-    hash_password,
-    verify_password,
+    InvalidTokenError,
+    InvalidTokenTypeError,
     create_access_token,
     create_refresh_token,
     decode_token,
+    hash_password,
+    verify_password,
     verify_token_type,
-    InvalidTokenError,
-    InvalidTokenTypeError,
 )
-from core.exceptions import (
-    DuplicateEmailError,
-    InvalidCredentialsError,
-    InactiveUserError,
-    RefreshTokenNotFoundError,
-)
-from core.config import settings
-from repositories.user_repository import UserRepository
 from repositories.refresh_token_repository import RefreshTokenRepository
-from schemas.auth import SignupRequest, UserResponse, TokenResponse, ChangePasswordRequest
+from repositories.user_repository import UserRepository
+from schemas.auth import ChangePasswordRequest, SignupRequest, TokenResponse, UserResponse
 
 
 class AuthService:

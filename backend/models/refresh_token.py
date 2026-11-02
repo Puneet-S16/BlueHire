@@ -7,6 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base, TimestampMixin
+from .user import User
 
 
 class RefreshToken(TimestampMixin, Base):
@@ -42,7 +43,7 @@ class RefreshToken(TimestampMixin, Base):
         DateTime(timezone=True),
         nullable=False,
     )
-    revoked_at: Mapped[Optional[datetime]] = mapped_column(
+    revoked_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         nullable=True,
     )
@@ -54,7 +55,7 @@ class RefreshToken(TimestampMixin, Base):
     def is_revoked(self) -> bool:
         return self.revoked_at is not None
 
-    def is_expired(self, now: Optional[datetime] = None) -> bool:
+    def is_expired(self, now: datetime | None = None) -> bool:
         check = now or datetime.now(timezone.utc)
         return self.expires_at <= check
 

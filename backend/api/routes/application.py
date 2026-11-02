@@ -1,30 +1,29 @@
 import uuid
 from typing import Any, List
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 
-from db.session import get_db
-from models.user import User
-from models.enums import RoleEnum
-from schemas.application import ApplicationCreate, ApplicationUpdate, ApplicationResponse
-from repositories.application_repository import ApplicationRepository
-from repositories.worker_repository import WorkerRepository
-from repositories.employer_repository import EmployerRepository
-from repositories.job_repository import JobRepository
-from services.application_service import ApplicationService
+from api.routes.auth import get_current_user
 from core.exceptions import (
     ApplicationAlreadyExistsError,
     ApplicationNotFoundError,
+    EmployerNotFoundError,
     InvalidApplicationOwnershipError,
+    InvalidEmployerRoleError,
+    InvalidWorkerRoleError,
+    JobNotFoundError,
     JobNotOpenError,
     WorkerNotFoundError,
-    EmployerNotFoundError,
-    JobNotFoundError,
-    InvalidWorkerRoleError,
-    InvalidEmployerRoleError
 )
-
-from api.routes.auth import get_current_user
+from db.session import get_db
+from fastapi import APIRouter, Depends, HTTPException, status
+from models.enums import RoleEnum
+from models.user import User
+from repositories.application_repository import ApplicationRepository
+from repositories.employer_repository import EmployerRepository
+from repositories.job_repository import JobRepository
+from repositories.worker_repository import WorkerRepository
+from schemas.application import ApplicationCreate, ApplicationResponse, ApplicationUpdate
+from services.application_service import ApplicationService
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -75,7 +74,7 @@ def apply_to_job(
     except ApplicationAlreadyExistsError as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
 
-@router.get("/me", response_model=List[ApplicationResponse], summary="Get my applications")
+@router.get("/me", response_model=list[ApplicationResponse], summary="Get my applications")
 def get_my_applications(
     current_user: User = Depends(require_worker_role),
     application_service: ApplicationService = Depends(get_application_service)
@@ -90,7 +89,7 @@ def get_my_applications(
     except WorkerNotFoundError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-@router.get("/jobs/{job_id}", response_model=List[ApplicationResponse], summary="Get applications for a job")
+@router.get("/jobs/{job_id}", response_model=list[ApplicationResponse], summary="Get applications for a job")
 def get_job_applications(
     job_id: uuid.UUID,
     current_user: User = Depends(require_employer_role),

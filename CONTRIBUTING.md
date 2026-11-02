@@ -40,3 +40,26 @@ We use **Conventional Commits**:
 - Ensure transactions are properly wrapped in `try/except` with a `.rollback()`.
 - Validate that all dependencies are injected via `Depends()`.
 - Verify Swagger documentation accurately reflects the endpoints.
+
+## 7. Running Tests & Quality Checks
+
+### Backend
+- Run the full test suite: `python -m pytest tests/ -v` (from `backend/`)
+- Tests use an isolated `bluehire_test` database — never dev/prod.
+- Lint: `ruff check backend/`
+- Format: `ruff format --check backend/`
+- Auto-fix: `ruff check --fix backend/ && ruff format backend/`
+
+### Frontend
+- Run tests: `npm run test` (from `frontend/`)
+- Lint: `npm run lint`
+- Type check: `npx tsc --noEmit`
+- Production build: `npm run build`
+
+## 8. CI
+
+GitHub Actions (`.github/workflows/ci.yml`) runs on every push and PR to `main`:
+- Backend: deps install, Ruff lint + format, pytest with PostgreSQL service container
+- Frontend: `npm ci`, ESLint, `tsc --noEmit`, `next build`, Vitest tests
+
+No production secrets are required in CI — dummy test-only credentials are used.

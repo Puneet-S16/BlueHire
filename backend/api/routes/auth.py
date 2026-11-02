@@ -1,31 +1,31 @@
 import uuid
 from typing import Any
-from fastapi import APIRouter, Depends, HTTPException, Request, status
-from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
 
-from core.security import decode_token, verify_token_type, InvalidTokenError, InvalidTokenTypeError
+from core.config import settings
 from core.exceptions import (
     DuplicateEmailError,
-    InvalidCredentialsError,
     InactiveUserError,
-    RefreshTokenNotFoundError
+    InvalidCredentialsError,
+    RefreshTokenNotFoundError,
 )
 from core.rate_limit import limiter
+from core.security import InvalidTokenError, InvalidTokenTypeError, decode_token, verify_token_type
 from db.session import SessionLocal
-from repositories.user_repository import UserRepository
-from repositories.refresh_token_repository import RefreshTokenRepository
-from services.auth_service import AuthService
-from schemas.auth import (
-    SignupRequest,
-    LoginRequest,
-    TokenResponse,
-    RefreshTokenRequest,
-    UserResponse,
-    ChangePasswordRequest
-)
+from fastapi import APIRouter, Depends, HTTPException, Request, status
+from fastapi.security import OAuth2PasswordBearer
 from models.user import User
-from core.config import settings
+from repositories.refresh_token_repository import RefreshTokenRepository
+from repositories.user_repository import UserRepository
+from schemas.auth import (
+    ChangePasswordRequest,
+    LoginRequest,
+    RefreshTokenRequest,
+    SignupRequest,
+    TokenResponse,
+    UserResponse,
+)
+from services.auth_service import AuthService
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")

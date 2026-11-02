@@ -2,10 +2,9 @@ import uuid
 from datetime import datetime, timezone
 from typing import Optional
 
-from sqlalchemy.orm import Session
-from sqlalchemy import func
-
 from models.refresh_token import RefreshToken
+from sqlalchemy import func
+from sqlalchemy.orm import Session
 
 
 class RefreshTokenRepository:
@@ -32,7 +31,6 @@ class RefreshTokenRepository:
 
         The caller is responsible for committing the transaction.
         """
-        now = datetime.now(timezone.utc)
         token = RefreshToken(
             user_id=user_id,
             jti=jti,
@@ -48,11 +46,11 @@ class RefreshTokenRepository:
             self.db.rollback()
             raise e
 
-    def get_by_jti(self, jti: str) -> Optional[RefreshToken]:
+    def get_by_jti(self, jti: str) -> RefreshToken | None:
         """Fetch a refresh token by its JTI without locking."""
         return self.db.query(RefreshToken).filter(RefreshToken.jti == jti).first()
 
-    def get_by_jti_for_update(self, jti: str) -> Optional[RefreshToken]:
+    def get_by_jti_for_update(self, jti: str) -> RefreshToken | None:
         """
         Fetch a refresh token by JTI with a row-level lock.
 
@@ -60,12 +58,7 @@ class RefreshTokenRepository:
         same token serialize: only the first request proceeds; subsequent
         requests find the token already revoked and are rejected.
         """
-        return (
-            self.db.query(RefreshToken)
-            .filter(RefreshToken.jti == jti)
-            .with_for_update()
-            .first()
-        )
+        return self.db.query(RefreshToken).filter(RefreshToken.jti == jti).with_for_update().first()
 
     def revoke_by_jti(self, jti: str) -> bool:
         """
@@ -77,10 +70,14 @@ class RefreshTokenRepository:
         not an error.
         """
         now = datetime.now(timezone.utc)
-        result = self.db.query(RefreshToken).filter(
-            RefreshToken.jti == jti,
-            RefreshToken.revoked_at.is_(None),
-        ).update({RefreshToken.revoked_at: now}, synchronize_session=False)
+        result = (
+            self.db.query(RefreshToken)
+            .filter(
+                RefreshToken.jti == jti,
+                RefreshToken.revoked_at.is_(None),
+            )
+            .update({RefreshToken.revoked_at: now}, synchronize_session=False)
+        )
         try:
             self.db.flush()
             return result > 0
@@ -97,10 +94,14 @@ class RefreshTokenRepository:
         devices.
         """
         now = datetime.now(timezone.utc)
-        result = self.db.query(RefreshToken).filter(
-            RefreshToken.user_id == user_id,
-            RefreshToken.revoked_at.is_(None),
-        ).update({RefreshToken.revoked_at: now}, synchronize_session=False)
+        result = (
+            self.db.query(RefreshToken)
+            .filter(
+                RefreshToken.user_id == user_id,
+                RefreshToken.revoked_at.is_(None),
+            )
+            .update({RefreshToken.revoked_at: now}, synchronize_session=False)
+        )
         try:
             self.db.flush()
             return result
@@ -108,7 +109,7 @@ class RefreshTokenRepository:
             self.db.rollback()
             raise e
 
-    def is_valid(self, jti: str, now: Optional[datetime] = None) -> bool:
+    def is_valid(self, jti: str, now: datetime | None = None) -> bool:
         """
         Return True if a refresh token exists, is not revoked, and is not expired.
 
@@ -131,10 +132,14 @@ class RefreshTokenRepository:
         Optional housekeeping. Returns the number of tokens marked revoked.
         """
         now = datetime.now(timezone.utc)
-        result = self.db.query(RefreshToken).filter(
-            RefreshToken.revoked_at.is_(None),
-            RefreshToken.expires_at <= now,
-        ).update({RefreshToken.revoked_at: now}, synchronize_session=False)
+        result = (
+            self.db.query(RefreshToken)
+            .filter(
+                RefreshToken.revoked_at.is_(None),
+                RefreshToken.expires_at <= now,
+            )
+            .update({RefreshToken.revoked_at: now}, synchronize_session=False)
+        )
         try:
             self.db.flush()
             return result

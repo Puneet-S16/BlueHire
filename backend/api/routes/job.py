@@ -1,18 +1,22 @@
 import uuid
 from typing import Any, List
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from sqlalchemy.orm import Session
-
-from db.session import get_db
-from models.user import User
-from models.enums import RoleEnum
-from schemas.job import JobCreate, JobUpdate, JobResponse
-from repositories.job_repository import JobRepository
-from repositories.employer_repository import EmployerRepository
-from services.job_service import JobService
-from core.exceptions import JobNotFoundError, InvalidJobOwnershipError, EmployerNotFoundError, InvalidEmployerRoleError
 
 from api.routes.auth import get_current_user
+from core.exceptions import (
+    EmployerNotFoundError,
+    InvalidEmployerRoleError,
+    InvalidJobOwnershipError,
+    JobNotFoundError,
+)
+from db.session import get_db
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from models.enums import RoleEnum
+from models.user import User
+from repositories.employer_repository import EmployerRepository
+from repositories.job_repository import JobRepository
+from schemas.job import JobCreate, JobResponse, JobUpdate
+from services.job_service import JobService
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -47,7 +51,7 @@ def create_job(
     except InvalidJobOwnershipError as e:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
 
-@router.get("", response_model=List[JobResponse], summary="List jobs")
+@router.get("", response_model=list[JobResponse], summary="List jobs")
 def list_jobs(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=100),

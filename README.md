@@ -135,6 +135,84 @@ alembic downgrade -1
 ### Development Notes
 - When downgrading PostgreSQL databases, you may need to manually drop `ENUM` types using `DROP TYPE type_name CASCADE` if you intend to re-upgrade and recreate them, due to how Alembic handles ENUMs natively.
 
+## Testing
+
+### Backend Tests
+
+Tests run against an isolated `bluehire_test` PostgreSQL database — never against development or production data.
+
+```bash
+cd backend
+
+# Install test dependencies (already in requirements.txt)
+pip install -r requirements.txt
+
+# Set a dummy SECRET_KEY (required by config validation at import time)
+export SECRET_KEY="test-secret-key-that-is-at-least-32-chars-long!!"
+
+# Ensure the test database exists (created automatically by conftest)
+# Run the full test suite
+python -m pytest tests/ -v
+```
+
+### Frontend Tests
+
+```bash
+cd frontend
+
+# Install dependencies (includes vitest and Testing Library)
+npm ci
+
+# Run the test suite
+npm run test
+```
+
+## Code Quality
+
+### Backend (Python)
+
+Linting and formatting are enforced with [Ruff](https://docs.astral.sh/ruff/):
+
+```bash
+cd backend
+
+# Lint check
+ruff check backend/
+
+# Format check
+ruff format --check backend/
+
+# Auto-fix lint issues and apply formatting
+ruff check --fix backend/
+ruff format backend/
+```
+
+Configuration lives in `pyproject.toml`.
+
+### Frontend (TypeScript/React)
+
+```bash
+cd frontend
+
+# Lint
+npm run lint
+
+# Type check
+npx tsc --noEmit
+
+# Production build
+npm run build
+```
+
+## Continuous Integration
+
+GitHub Actions runs on every push and pull request to `main` (`.github/workflows/ci.yml`):
+
+- **Backend**: dependency install, Ruff lint + format checks, pytest against a PostgreSQL service container
+- **Frontend**: `npm ci`, ESLint, TypeScript type check, production build, Vitest tests
+
+All jobs run independently. No production secrets are required — CI uses dummy test-only credentials.
+
 ## Authentication Security Foundation
 
 BlueHire implements a robust, production-ready security foundation using JSON Web Tokens (JWT) and Argon2 hashing.

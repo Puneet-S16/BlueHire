@@ -22,9 +22,8 @@ import uuid
 from datetime import timedelta
 
 import pytest
-from fastapi.testclient import TestClient  # noqa: F401  (used via fixture)
-
 from conftest import TEST_DATABASE_URL  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: F401  (used via fixture)
 
 VALID_PASSWORD = "StrongPassword123!"
 WEAK_PASSWORD = "weak"
@@ -132,9 +131,9 @@ class TestLogin:
         assert r.status_code == 401, r.text
 
     def test_login_inactive_user(self, client: TestClient):
-        from models.user import User
         from core.security import hash_password
         from models.enums import RoleEnum
+        from models.user import User
         from sqlalchemy import create_engine
         from sqlalchemy.orm import sessionmaker
 
@@ -251,9 +250,7 @@ class TestRefresh:
         email = f"expired_{uuid.uuid4().hex}@example.com"
         _signup_payload(client, email)
         # Create a refresh token that is already expired.
-        expired_token = create_refresh_token(
-            uuid.uuid4(), expires_delta=timedelta(days=-1)
-        )
+        expired_token = create_refresh_token(uuid.uuid4(), expires_delta=timedelta(days=-1))
         r = client.post(
             "/api/v1/auth/refresh",
             json={"refresh_token": expired_token},

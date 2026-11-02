@@ -23,14 +23,13 @@ os.environ["POSTGRES_DB"] = "bluehire_test"
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import pytest  # noqa: E402
+from core.rate_limit import limiter  # noqa: E402
+from db.session import get_db  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
+from main import app  # noqa: E402
+from models import Base  # noqa: E402
 from sqlalchemy import create_engine  # noqa: E402
 from sqlalchemy.orm import sessionmaker  # noqa: E402
-from fastapi.testclient import TestClient  # noqa: E402
-
-from main import app  # noqa: E402
-from db.session import get_db  # noqa: E402
-from models import Base  # noqa: E402
-from core.rate_limit import limiter  # noqa: E402
 
 TEST_DATABASE_NAME = "bluehire_test"
 TEST_DATABASE_URL = (
@@ -62,9 +61,7 @@ def _assert_test_database_isolation() -> None:
 _assert_test_database_isolation()
 
 engine = create_engine(TEST_DATABASE_URL, pool_pre_ping=True)
-TestingSessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=engine
-)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 @pytest.fixture(scope="session", autouse=True)
