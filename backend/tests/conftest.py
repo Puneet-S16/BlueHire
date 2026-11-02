@@ -33,7 +33,7 @@ from sqlalchemy.orm import sessionmaker  # noqa: E402
 
 TEST_DATABASE_NAME = "bluehire_test"
 TEST_DATABASE_URL = (
-    f"postgresql://{os.environ['POSTGRES_USER']}:{os.environ['POSTGRES_PASSWORD']}"
+    f"postgresql+psycopg2://{os.environ['POSTGRES_USER']}:{os.environ['POSTGRES_PASSWORD']}"
     f"@{os.environ['POSTGRES_SERVER']}/{TEST_DATABASE_NAME}"
 )
 
