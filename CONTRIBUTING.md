@@ -63,3 +63,9 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on every push and PR to `main`:
 - Frontend: `npm ci`, ESLint, `tsc --noEmit`, `next build`, Vitest tests
 
 No production secrets are required in CI — dummy test-only credentials are used.
+
+## 9. Community Guidelines
+
+All contributors are expected to follow the project's
+[Code of Conduct](CODE_OF_CONDUCT.md). For security-related reports, please see
+[SECURITY.md](SECURITY.md).
