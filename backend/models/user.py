@@ -23,6 +23,7 @@ class User(TimestampMixin, Base):
     employer_profile: Mapped[Optional["Employer"]] = relationship("Employer", back_populates="user", uselist=False, cascade="all, delete-orphan")
     documents: Mapped[List["Document"]] = relationship("Document", back_populates="uploader", cascade="all, delete-orphan")
     notifications: Mapped[List["Notification"]] = relationship("Notification", back_populates="user", cascade="all, delete-orphan")
+    refresh_tokens: Mapped[List["RefreshToken"]] = relationship("RefreshToken", back_populates="user", cascade="all, delete-orphan")
 
     def __repr__(self) -> str:
         return f"<User {self.email}>"

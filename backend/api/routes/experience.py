@@ -80,7 +80,7 @@ def delete_experience(
     experience_id: uuid.UUID,
     current_user: User = Depends(require_worker_role),
     experience_service: ExperienceService = Depends(get_experience_service)
-) -> Any:
+) -> None:
     try:
         experience_service.delete_experience(current_user, experience_id)
     except ExperienceNotFoundError as e:

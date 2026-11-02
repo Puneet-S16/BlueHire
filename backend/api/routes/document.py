@@ -86,7 +86,7 @@ def delete_document(
     document_id: uuid.UUID,
     current_user: User = Depends(require_worker_role),
     document_service: DocumentService = Depends(get_document_service)
-) -> Any:
+) -> None:
     """
     Delete a document. Requires WORKER role and document ownership.
     """

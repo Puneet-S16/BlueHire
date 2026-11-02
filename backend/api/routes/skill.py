@@ -93,7 +93,7 @@ def remove_skill(
     skill_id: int,
     current_user: User = Depends(require_worker_role),
     skill_service: SkillService = Depends(get_skill_service)
-) -> Any:
+) -> None:
     try:
         skill_service.remove_skill_from_worker(current_user, skill_id)
     except WorkerSkillNotFoundError as e:
@@ -148,7 +148,7 @@ def delete_skill(
     skill_id: int,
     current_user: User = Depends(require_admin_role),
     skill_service: SkillService = Depends(get_skill_service)
-) -> Any:
+) -> None:
     try:
         skill_service.delete_skill(skill_id)
     except SkillNotFoundError as e:

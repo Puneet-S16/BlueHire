@@ -97,7 +97,7 @@ def delete_job(
     job_id: uuid.UUID,
     current_user: User = Depends(require_employer_role),
     job_service: JobService = Depends(get_job_service)
-) -> Any:
+) -> None:
     """
     Delete an existing job posting. Requires EMPLOYER role.
     """

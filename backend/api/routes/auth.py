@@ -1,6 +1,6 @@
 import uuid
 from typing import Any
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
@@ -11,8 +11,10 @@ from core.exceptions import (
     InactiveUserError,
     RefreshTokenNotFoundError
 )
+from core.rate_limit import limiter
 from db.session import SessionLocal
 from repositories.user_repository import UserRepository
+from repositories.refresh_token_repository import RefreshTokenRepository
 from services.auth_service import AuthService
 from schemas.auth import (
     SignupRequest,
@@ -38,8 +40,14 @@ def get_db():
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
     return UserRepository(db)
 
-def get_auth_service(user_repo: UserRepository = Depends(get_user_repository)) -> AuthService:
-    return AuthService(user_repo)
+def get_refresh_token_repository(db: Session = Depends(get_db)) -> RefreshTokenRepository:
+    return RefreshTokenRepository(db)
+
+def get_auth_service(
+    user_repo: UserRepository = Depends(get_user_repository),
+    refresh_token_repo: RefreshTokenRepository = Depends(get_refresh_token_repository),
+) -> AuthService:
+    return AuthService(user_repo, refresh_token_repo)
 
 def get_current_user(
     token: str = Depends(oauth2_scheme), 
@@ -75,22 +83,24 @@ def get_current_user(
         )
 
 @router.post("/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED, summary="Register a new user", tags=["auth"])
-def signup(request: SignupRequest, auth_service: AuthService = Depends(get_auth_service)) -> Any:
+@limiter.limit("5/minute")
+def signup(request: Request, signup_request: SignupRequest, auth_service: AuthService = Depends(get_auth_service)) -> Any:
     """
     Register a new user in the system.
     """
     try:
-        return auth_service.register_user(request)
+        return auth_service.register_user(signup_request)
     except DuplicateEmailError:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="A user with this email already exists")
 
 @router.post("/login", response_model=TokenResponse, summary="Log in and obtain tokens", tags=["auth"])
-def login(request: LoginRequest, auth_service: AuthService = Depends(get_auth_service)) -> Any:
+@limiter.limit("5/minute")
+def login(request: Request, login_request: LoginRequest, auth_service: AuthService = Depends(get_auth_service)) -> Any:
     """
     Authenticate a user using email and password to receive access and refresh tokens.
     """
     try:
-        return auth_service.authenticate_user(request.email, request.password)
+        return auth_service.authenticate_user(login_request.email, login_request.password)
     except InvalidCredentialsError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
     except InactiveUserError:

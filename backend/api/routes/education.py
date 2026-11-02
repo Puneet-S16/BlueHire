@@ -80,7 +80,7 @@ def delete_education(
     education_id: uuid.UUID,
     current_user: User = Depends(require_worker_role),
     education_service: EducationService = Depends(get_education_service)
-) -> Any:
+) -> None:
     try:
         education_service.delete_education(current_user, education_id)
     except EducationNotFoundError as e:

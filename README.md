@@ -140,11 +140,17 @@ alembic downgrade -1
 BlueHire implements a robust, production-ready security foundation using JSON Web Tokens (JWT) and Argon2 hashing.
 
 ### Security Architecture
-- **Argon2 Password Hashing**: Passwords are mathematically hashed using `pwdlib` and Argon2, protecting against brute-force and rainbow table attacks.
-- **JWT Authentication Strategy**: API routes are secured via stateless Bearer tokens.
-- **Access Tokens**: Short-lived (15 minutes) tokens containing minimal claims (only `sub`, `type`, `iat`, `exp`).
-- **Refresh Tokens**: Long-lived (7 days) tokens containing a uniquely generated JWT ID (`jti`) for secure tracking and potential revocation.
-- **Custom Security Exceptions**: The security layer gracefully intercepts internal parser errors and raises sanitized `InvalidTokenError` and `InvalidTokenTypeError` exceptions.
+- **Argon2 Password Hashing**: Passwords are hashed using `pwdlib` and Argon2, protecting against brute-force and rainbow table attacks.
+- **JWT Authentication Strategy**: API routes are secured via stateless Bearer access tokens and stateful refresh tokens.
+- **Access Tokens**: Short-lived (15 minutes) tokens containing a unique JWT ID (`jti`), `sub`, `type`, `iat`, and `exp`.
+- **Refresh Tokens**: Long-lived (7 days) stateful tokens stored in the `refresh_tokens` table. Each refresh token is tracked by its JWT ID (`jti`), expiry, and revocation timestamp.
+- **Refresh Token Rotation**: On `/auth/refresh`, the old refresh token is revoked and a new one issued atomically in a single database transaction. Row-level locking (`SELECT FOR UPDATE`) prevents concurrent double-rotation.
+- **Refresh Token Reuse Detection**: If an already-revoked refresh token is presented, the request is rejected and all remaining active refresh tokens for that user are revoked, forcing re-authentication across all devices.
+- **Logout Revocation**: `/auth/logout` revokes the presented refresh token. Idempotent: invalid or unknown tokens still return success without leaking state.
+- **Password-Change Revocation**: `/auth/change-password` revokes every active refresh token for the user atomically with the password update, forcing re-authentication on all devices.
+- **Rate Limiting**: `/auth/signup` and `/auth/login` are rate-limited (5 requests/minute per client) via `slowapi` to mitigate brute-force and credential-stuffing attacks. Local development uses in-memory storage; production should use Redis and trust `X-Forwarded-For` from a reverse proxy.
+- **Email Enumeration Resistance**: Login returns the same generic error whether the email is unknown or the password is wrong.
+- **Custom Security Exceptions**: Sanitized `InvalidTokenError` and `InvalidTokenTypeError` exceptions avoid leaking implementation details.
 
 ### Environment Variables Required
 The security foundation relies on the following environment variables:

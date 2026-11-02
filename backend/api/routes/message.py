@@ -66,7 +66,7 @@ def mark_all_messages_read(
     conversation_id: uuid.UUID,
     current_user: User = Depends(get_current_user),
     msg_service: MessageService = Depends(get_message_service)
-) -> Any:
+) -> None:
     try:
         msg_service.mark_all_messages_read(current_user, conversation_id)
     except ConversationNotFoundError as e:

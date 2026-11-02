@@ -134,7 +134,7 @@ def withdraw_application(
     application_id: uuid.UUID,
     current_user: User = Depends(require_worker_role),
     application_service: ApplicationService = Depends(get_application_service)
-) -> Any:
+) -> None:
     """
     Withdraw an application. Requires WORKER role.
     """

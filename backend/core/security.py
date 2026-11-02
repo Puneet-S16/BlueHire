@@ -61,6 +61,7 @@ def create_access_token(
     to_encode: Dict[str, Any] = {
         "sub": str(subject),
         "type": "access",
+        "jti": generate_jti(),
         "exp": expire,
         "iat": datetime.now(timezone.utc),
     }

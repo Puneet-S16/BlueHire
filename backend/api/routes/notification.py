@@ -36,7 +36,7 @@ def get_my_notifications(
 def mark_all_as_read(
     current_user: User = Depends(get_current_user),
     notification_service: NotificationService = Depends(get_notification_service)
-) -> Any:
+) -> None:
     notification_service.mark_all_as_read(current_user)
 
 @router.patch("/{notification_id}/read", response_model=NotificationResponse, summary="Mark notification as read")

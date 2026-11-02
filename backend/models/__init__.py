@@ -15,5 +15,6 @@ from .application import Application
 from .saved_job import SavedJob
 from .review import Review
 from .notification import Notification
+from .refresh_token import RefreshToken
 from .conversation import Conversation
 from .message import Message

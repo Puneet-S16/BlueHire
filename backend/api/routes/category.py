@@ -75,7 +75,7 @@ def delete_category(
     category_id: int,
     current_user: User = Depends(require_admin_role),
     category_service: CategoryService = Depends(get_category_service)
-) -> Any:
+) -> None:
     try:
         category_service.delete_category(category_id)
     except CategoryNotFoundError as e:

@@ -70,7 +70,7 @@ def unsave_job(
     job_id: uuid.UUID,
     current_user: User = Depends(get_current_user),
     saved_job_service: SavedJobService = Depends(get_saved_job_service)
-) -> Any:
+) -> None:
     try:
         saved_job_service.unsave_job(current_user, job_id)
     except InvalidWorkerRoleError as e:
