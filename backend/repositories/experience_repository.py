@@ -1,19 +1,27 @@
 import uuid
-from typing import Optional, List
-from sqlalchemy.orm import Session
+from typing import List, Optional
+
+from models.experience import WorkHistory
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
-from models.experience import WorkHistory
+from sqlalchemy.orm import Session
+
 
 class ExperienceRepository:
     def __init__(self, db: Session):
         self.db = db
 
     def get_by_id(self, experience_id: uuid.UUID) -> Optional[WorkHistory]:
-        return self.db.execute(select(WorkHistory).where(WorkHistory.id == experience_id)).scalar_one_or_none()
+        return self.db.execute(
+            select(WorkHistory).where(WorkHistory.id == experience_id)
+        ).scalar_one_or_none()
 
     def get_by_worker_id(self, worker_id: uuid.UUID) -> List[WorkHistory]:
-        return list(self.db.execute(select(WorkHistory).where(WorkHistory.worker_id == worker_id)).scalars().all())
+        return list(
+            self.db.execute(select(WorkHistory).where(WorkHistory.worker_id == worker_id))
+            .scalars()
+            .all()
+        )
 
     def create_experience(self, experience: WorkHistory) -> WorkHistory:
         try:

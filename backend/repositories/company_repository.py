@@ -1,10 +1,12 @@
 import uuid
 from typing import List, Optional
-from sqlalchemy.orm import Session
-from sqlalchemy import select
-from sqlalchemy.exc import IntegrityError
+
 from models.company import Company
 from schemas.company import CompanyCreate, CompanyUpdate
+from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
+
 
 class CompanyRepository:
     def __init__(self, db: Session):

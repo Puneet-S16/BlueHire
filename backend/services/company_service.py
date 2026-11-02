@@ -1,8 +1,10 @@
 import uuid
 from typing import List
-from schemas.company import CompanyCreate, CompanyUpdate, CompanyResponse
-from repositories.company_repository import CompanyRepository
+
 from core.exceptions import CompanyAlreadyExistsError, CompanyNotFoundError
+from repositories.company_repository import CompanyRepository
+from schemas.company import CompanyCreate, CompanyResponse, CompanyUpdate
+
 
 class CompanyService:
     def __init__(self, company_repo: CompanyRepository):
@@ -12,7 +14,7 @@ class CompanyService:
         existing = self.company_repo.get_by_name(data.name)
         if existing:
             raise CompanyAlreadyExistsError(f"Company with name '{data.name}' already exists.")
-        
+
         company = self.company_repo.create_company(data)
         return CompanyResponse.model_validate(company)
 
@@ -30,11 +32,11 @@ class CompanyService:
         company = self.company_repo.get_by_id(company_id)
         if not company:
             raise CompanyNotFoundError(f"Company with id {company_id} not found.")
-        
+
         if data.name and data.name != company.name:
             existing = self.company_repo.get_by_name(data.name)
             if existing:
                 raise CompanyAlreadyExistsError(f"Company with name '{data.name}' already exists.")
-                
+
         updated_company = self.company_repo.update_company(company, data)
         return CompanyResponse.model_validate(updated_company)

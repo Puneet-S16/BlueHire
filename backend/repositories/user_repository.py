@@ -1,14 +1,16 @@
 import uuid
-from typing import Optional, Dict, Any
 from datetime import datetime
-from sqlalchemy.orm import Session
+from typing import Any, Dict, Optional
+
 from models.user import User
+from sqlalchemy.orm import Session
 
 
 class UserRepository:
     """
     Repository handling all database operations for the User domain.
     """
+
     def __init__(self, db: Session):
         self.db = db
 

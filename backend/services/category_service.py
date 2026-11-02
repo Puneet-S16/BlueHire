@@ -1,8 +1,10 @@
 from typing import List
-from models.skill import Category
-from schemas.category import CategoryCreate, CategoryUpdate
-from repositories.category_repository import CategoryRepository
+
 from core.exceptions import CategoryAlreadyExistsError, CategoryNotFoundError
+from models.skill import Category
+from repositories.category_repository import CategoryRepository
+from schemas.category import CategoryCreate, CategoryUpdate
+
 
 class CategoryService:
     def __init__(self, category_repo: CategoryRepository):
@@ -11,7 +13,7 @@ class CategoryService:
     def create_category(self, request: CategoryCreate) -> Category:
         if self.category_repo.get_by_name(request.name):
             raise CategoryAlreadyExistsError("Category with this name already exists")
-            
+
         category = Category(**request.model_dump())
         return self.category_repo.create_category(category)
 
@@ -26,15 +28,15 @@ class CategoryService:
 
     def update_category(self, category_id: int, request: CategoryUpdate) -> Category:
         category = self.get_category(category_id)
-        
+
         if request.name is not None and request.name != category.name:
             if self.category_repo.get_by_name(request.name):
                 raise CategoryAlreadyExistsError("Category with this name already exists")
-                
+
         update_data = request.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(category, key, value)
-            
+
         return self.category_repo.update_category(category)
 
     def delete_category(self, category_id: int) -> None:

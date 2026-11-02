@@ -93,9 +93,7 @@ class AuthService:
         refresh_token = create_refresh_token(user.id)
 
         refresh_payload = decode_token(refresh_token)
-        expires_at = datetime.fromtimestamp(
-            refresh_payload["exp"], tz=timezone.utc
-        )
+        expires_at = datetime.fromtimestamp(refresh_payload["exp"], tz=timezone.utc)
         self.refresh_token_repo.store(user.id, refresh_payload["jti"], expires_at)
         self.db.commit()
 
@@ -155,12 +153,8 @@ class AuthService:
         new_refresh_token = create_refresh_token(user_id)
 
         new_refresh_payload = decode_token(new_refresh_token)
-        new_expires_at = datetime.fromtimestamp(
-            new_refresh_payload["exp"], tz=timezone.utc
-        )
-        self.refresh_token_repo.store(
-            user_id, new_refresh_payload["jti"], new_expires_at
-        )
+        new_expires_at = datetime.fromtimestamp(new_refresh_payload["exp"], tz=timezone.utc)
+        self.refresh_token_repo.store(user_id, new_refresh_payload["jti"], new_expires_at)
 
         # Single commit: revoke old + store new are atomic.
         self.db.commit()

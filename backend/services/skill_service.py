@@ -1,21 +1,23 @@
 import uuid
 from typing import List
-from models.user import User
-from models.skill import Skill, WorkerSkill
-from models.enums import RoleEnum
-from schemas.skill import SkillCreate, SkillUpdate
-from repositories.skill_repository import SkillRepository, WorkerSkillRepository
-from repositories.worker_repository import WorkerRepository
-from repositories.category_repository import CategoryRepository
+
 from core.exceptions import (
+    CategoryNotFoundError,
+    InvalidWorkerRoleError,
     SkillAlreadyExistsError,
     SkillNotFoundError,
+    WorkerNotFoundError,
     WorkerSkillAlreadyExistsError,
     WorkerSkillNotFoundError,
-    WorkerNotFoundError,
-    InvalidWorkerRoleError,
-    CategoryNotFoundError
 )
+from models.enums import RoleEnum
+from models.skill import Skill, WorkerSkill
+from models.user import User
+from repositories.category_repository import CategoryRepository
+from repositories.skill_repository import SkillRepository, WorkerSkillRepository
+from repositories.worker_repository import WorkerRepository
+from schemas.skill import SkillCreate, SkillUpdate
+
 
 class SkillService:
     def __init__(
@@ -23,7 +25,7 @@ class SkillService:
         skill_repo: SkillRepository,
         worker_skill_repo: WorkerSkillRepository,
         worker_repo: WorkerRepository,
-        category_repo: CategoryRepository
+        category_repo: CategoryRepository,
     ):
         self.skill_repo = skill_repo
         self.worker_skill_repo = worker_skill_repo
@@ -40,7 +42,7 @@ class SkillService:
 
     def list_skills(self, skip: int = 0, limit: int = 100) -> List[Skill]:
         return self.skill_repo.list_skills(skip=skip, limit=limit)
-        
+
     def get_skill(self, skill_id: int) -> Skill:
         skill = self.skill_repo.get_by_id(skill_id)
         if not skill:
@@ -57,7 +59,7 @@ class SkillService:
             if self.skill_repo.get_by_name(request.name):
                 raise SkillAlreadyExistsError("Skill with this name already exists")
             skill.name = request.name
-            
+
         return self.skill_repo.update_skill(skill)
 
     def delete_skill(self, skill_id: int) -> None:
@@ -74,21 +76,21 @@ class SkillService:
 
     def assign_skill_to_worker(self, user: User, skill_id: int) -> WorkerSkill:
         worker = self._verify_worker(user)
-        
+
         # Verify skill exists
         self.get_skill(skill_id)
-        
+
         if self.worker_skill_repo.has_skill(worker.user_id, skill_id):
             raise WorkerSkillAlreadyExistsError("Worker already has this skill")
-            
+
         return self.worker_skill_repo.add_skill(worker.user_id, skill_id)
 
     def remove_skill_from_worker(self, user: User, skill_id: int) -> None:
         worker = self._verify_worker(user)
-        
+
         if not self.worker_skill_repo.has_skill(worker.user_id, skill_id):
             raise WorkerSkillNotFoundError("Worker does not have this skill")
-            
+
         self.worker_skill_repo.remove_skill(worker.user_id, skill_id)
 
     def get_my_skills(self, user: User) -> List[WorkerSkill]:

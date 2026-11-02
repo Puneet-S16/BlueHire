@@ -1,7 +1,9 @@
 import uuid
-from typing import Optional, List
 from datetime import datetime
+from typing import List, Optional
+
 from pydantic import BaseModel, ConfigDict, Field
+
 
 class NotificationResponse(BaseModel):
     id: uuid.UUID
@@ -14,11 +16,13 @@ class NotificationResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+
 class NotificationListResponse(BaseModel):
     total: int
     page: int
     page_size: int
     results: List[NotificationResponse]
+
 
 class WorkerDashboardResponse(BaseModel):
     total_applications: int
@@ -26,6 +30,7 @@ class WorkerDashboardResponse(BaseModel):
     shortlisted_count: int
     rejected_count: int
     recent_applications: list  # Will be a list of minimal application data
+
 
 class EmployerDashboardResponse(BaseModel):
     total_jobs_posted: int

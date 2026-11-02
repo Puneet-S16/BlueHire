@@ -1,8 +1,10 @@
 import uuid
-from typing import Optional, List
-from sqlalchemy.orm import Session
-from sqlalchemy import select
+from typing import List, Optional
+
 from models.job import Job
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
 
 class JobRepository:
     def __init__(self, db: Session):

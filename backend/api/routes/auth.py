@@ -30,6 +30,7 @@ from sqlalchemy.orm import Session
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/login")
 
+
 def get_db():
     db = SessionLocal()
     try:
@@ -37,11 +38,14 @@ def get_db():
     finally:
         db.close()
 
+
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
     return UserRepository(db)
 
+
 def get_refresh_token_repository(db: Session = Depends(get_db)) -> RefreshTokenRepository:
     return RefreshTokenRepository(db)
+
 
 def get_auth_service(
     user_repo: UserRepository = Depends(get_user_repository),
@@ -49,9 +53,9 @@ def get_auth_service(
 ) -> AuthService:
     return AuthService(user_repo, refresh_token_repo)
 
+
 def get_current_user(
-    token: str = Depends(oauth2_scheme), 
-    user_repo: UserRepository = Depends(get_user_repository)
+    token: str = Depends(oauth2_scheme), user_repo: UserRepository = Depends(get_user_repository)
 ) -> User:
     try:
         payload = decode_token(token)
@@ -82,57 +86,101 @@ def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-@router.post("/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED, summary="Register a new user", tags=["auth"])
+
+@router.post(
+    "/signup",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Register a new user",
+    tags=["auth"],
+)
 @limiter.limit("5/minute")
-def signup(request: Request, signup_request: SignupRequest, auth_service: AuthService = Depends(get_auth_service)) -> Any:
+def signup(
+    request: Request,
+    signup_request: SignupRequest,
+    auth_service: AuthService = Depends(get_auth_service),
+) -> Any:
     """
     Register a new user in the system.
     """
     try:
         return auth_service.register_user(signup_request)
     except DuplicateEmailError:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="A user with this email already exists")
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT, detail="A user with this email already exists"
+        )
 
-@router.post("/login", response_model=TokenResponse, summary="Log in and obtain tokens", tags=["auth"])
+
+@router.post(
+    "/login", response_model=TokenResponse, summary="Log in and obtain tokens", tags=["auth"]
+)
 @limiter.limit("5/minute")
-def login(request: Request, login_request: LoginRequest, auth_service: AuthService = Depends(get_auth_service)) -> Any:
+def login(
+    request: Request,
+    login_request: LoginRequest,
+    auth_service: AuthService = Depends(get_auth_service),
+) -> Any:
     """
     Authenticate a user using email and password to receive access and refresh tokens.
     """
     try:
         return auth_service.authenticate_user(login_request.email, login_request.password)
     except InvalidCredentialsError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect email or password"
+        )
     except InactiveUserError:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User account is inactive")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="User account is inactive"
+        )
 
-@router.post("/refresh", response_model=TokenResponse, summary="Refresh access token", tags=["auth"])
-def refresh(request: RefreshTokenRequest, auth_service: AuthService = Depends(get_auth_service)) -> Any:
+
+@router.post(
+    "/refresh", response_model=TokenResponse, summary="Refresh access token", tags=["auth"]
+)
+def refresh(
+    request: RefreshTokenRequest, auth_service: AuthService = Depends(get_auth_service)
+) -> Any:
     """
     Use a valid refresh token to obtain a new access token and a rotated refresh token.
     """
     try:
         return auth_service.refresh_access_token(request.refresh_token)
     except InvalidCredentialsError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired refresh token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired refresh token"
+        )
     except RefreshTokenNotFoundError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token not found or revoked")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token not found or revoked"
+        )
     except InactiveUserError:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User account is inactive")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="User account is inactive"
+        )
+
 
 @router.post("/logout", status_code=status.HTTP_200_OK, summary="Log out a user", tags=["auth"])
-def logout(request: RefreshTokenRequest, auth_service: AuthService = Depends(get_auth_service)) -> Any:
+def logout(
+    request: RefreshTokenRequest, auth_service: AuthService = Depends(get_auth_service)
+) -> Any:
     """
     Log out a user by revoking their refresh token.
     """
     auth_service.logout_user(request.refresh_token)
     return {"detail": "Successfully logged out"}
 
-@router.post("/change-password", status_code=status.HTTP_200_OK, summary="Change user password", tags=["auth"])
+
+@router.post(
+    "/change-password",
+    status_code=status.HTTP_200_OK,
+    summary="Change user password",
+    tags=["auth"],
+)
 def change_password(
-    request: ChangePasswordRequest, 
+    request: ChangePasswordRequest,
     current_user: User = Depends(get_current_user),
-    auth_service: AuthService = Depends(get_auth_service)
+    auth_service: AuthService = Depends(get_auth_service),
 ) -> Any:
     """
     Change the authenticated user's password.
@@ -141,7 +189,10 @@ def change_password(
         auth_service.change_password(current_user.id, request)
         return {"detail": "Password successfully updated"}
     except InvalidCredentialsError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect current password")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect current password"
+        )
+
 
 @router.get("/me", response_model=UserResponse, summary="Get current user", tags=["auth"])
 def get_me(current_user: User = Depends(get_current_user)) -> Any:

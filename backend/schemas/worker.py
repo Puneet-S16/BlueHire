@@ -1,7 +1,9 @@
 import uuid
 from typing import Optional
-from pydantic import BaseModel, ConfigDict, Field
+
 from models.enums import AvailabilityStatusEnum
+from pydantic import BaseModel, ConfigDict, Field
+
 
 class WorkerBase(BaseModel):
     first_name: str = Field(..., min_length=1, max_length=100)
@@ -17,8 +19,10 @@ class WorkerBase(BaseModel):
     latitude: Optional[float] = Field(None, ge=-90.0, le=90.0)
     longitude: Optional[float] = Field(None, ge=-180.0, le=180.0)
 
+
 class WorkerCreate(WorkerBase):
     pass
+
 
 class WorkerUpdate(BaseModel):
     first_name: Optional[str] = Field(None, min_length=1, max_length=100)
@@ -33,6 +37,7 @@ class WorkerUpdate(BaseModel):
     state: Optional[str] = Field(None, max_length=100)
     latitude: Optional[float] = Field(None, ge=-90.0, le=90.0)
     longitude: Optional[float] = Field(None, ge=-180.0, le=180.0)
+
 
 class WorkerResponse(WorkerBase):
     user_id: uuid.UUID

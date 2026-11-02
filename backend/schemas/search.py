@@ -1,8 +1,11 @@
-from typing import Optional, List
 import uuid
-from pydantic import BaseModel, Field
+from typing import List, Optional
+
 from models.enums import JobTypeEnum
+from pydantic import BaseModel, Field
+
 from schemas.job import JobResponse
+
 
 class SearchJobsRequest(BaseModel):
     keyword: Optional[str] = None
@@ -15,13 +18,14 @@ class SearchJobsRequest(BaseModel):
     max_salary: Optional[float] = Field(None, ge=0)
     experience_required_years: Optional[int] = Field(None, ge=0)
     is_remote: Optional[bool] = None
-    
+
     # Pagination
     page: int = Field(1, ge=1)
     page_size: int = Field(20, ge=1, le=100)
-    
+
     # Sorting
     sort_by: Optional[str] = Field("newest", pattern="^(newest|oldest|salary_high|salary_low)$")
+
 
 class SearchJobsResponse(BaseModel):
     total: int

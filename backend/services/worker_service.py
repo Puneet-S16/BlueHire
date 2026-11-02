@@ -1,10 +1,12 @@
 import uuid
+
+from core.exceptions import InvalidWorkerRoleError, WorkerAlreadyExistsError, WorkerNotFoundError
+from models.enums import RoleEnum
 from models.user import User
 from models.worker import Worker
-from models.enums import RoleEnum
-from schemas.worker import WorkerCreate, WorkerUpdate
 from repositories.worker_repository import WorkerRepository
-from core.exceptions import WorkerAlreadyExistsError, WorkerNotFoundError, InvalidWorkerRoleError
+from schemas.worker import WorkerCreate, WorkerUpdate
+
 
 class WorkerService:
     def __init__(self, worker_repo: WorkerRepository):
@@ -31,7 +33,7 @@ class WorkerService:
             city=request.city,
             state=request.state,
             latitude=request.latitude,
-            longitude=request.longitude
+            longitude=request.longitude,
         )
         return self.worker_repo.create_worker(worker)
 
@@ -49,5 +51,5 @@ class WorkerService:
         update_data = request.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(worker, key, value)
-            
+
         return self.worker_repo.update_worker(worker)

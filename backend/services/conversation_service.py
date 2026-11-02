@@ -1,21 +1,28 @@
 import uuid
 from typing import List, Tuple
-from models.user import User
-from models.conversation import Conversation
-from models.enums import RoleEnum
-from repositories.conversation_repository import ConversationRepository
-from repositories.application_repository import ApplicationRepository
-from repositories.employer_repository import EmployerRepository
+
 from core.exceptions import (
+    ApplicationNotFoundError,
     ConversationAlreadyExistsError,
     ConversationNotFoundError,
     InvalidConversationAccessError,
     InvalidEmployerRoleError,
-    ApplicationNotFoundError
 )
+from models.conversation import Conversation
+from models.enums import RoleEnum
+from models.user import User
+from repositories.application_repository import ApplicationRepository
+from repositories.conversation_repository import ConversationRepository
+from repositories.employer_repository import EmployerRepository
+
 
 class ConversationService:
-    def __init__(self, conv_repo: ConversationRepository, app_repo: ApplicationRepository, emp_repo: EmployerRepository):
+    def __init__(
+        self,
+        conv_repo: ConversationRepository,
+        app_repo: ApplicationRepository,
+        emp_repo: EmployerRepository,
+    ):
         self.conv_repo = conv_repo
         self.app_repo = app_repo
         self.emp_repo = emp_repo
@@ -41,13 +48,13 @@ class ConversationService:
             raise ConversationAlreadyExistsError("Conversation already exists for this application")
 
         conv = Conversation(
-            application_id=application_id,
-            employer_id=user.id,
-            worker_id=application.worker_id
+            application_id=application_id, employer_id=user.id, worker_id=application.worker_id
         )
         return self.conv_repo.create_conversation(conv)
 
-    def get_my_conversations(self, user: User, page: int = 1, page_size: int = 20) -> Tuple[int, List[Conversation]]:
+    def get_my_conversations(
+        self, user: User, page: int = 1, page_size: int = 20
+    ) -> Tuple[int, List[Conversation]]:
         return self.conv_repo.get_user_conversations(user.id, page, page_size)
 
     def get_conversation(self, user: User, conversation_id: uuid.UUID) -> Conversation:

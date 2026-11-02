@@ -1,8 +1,10 @@
 import uuid
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
+from models.enums import JobStatusEnum, JobTypeEnum, PayTypeEnum
 from pydantic import BaseModel, ConfigDict, Field, model_validator
-from models.enums import JobTypeEnum, JobStatusEnum, PayTypeEnum
+
 
 class JobBase(BaseModel):
     category_id: int
@@ -20,13 +22,15 @@ class JobBase(BaseModel):
     pay_max: Optional[float] = Field(None, ge=0)
     expires_at: Optional[datetime] = None
 
+
 class JobCreate(JobBase):
-    @model_validator(mode='after')
-    def check_pay_range(self) -> 'JobCreate':
+    @model_validator(mode="after")
+    def check_pay_range(self) -> "JobCreate":
         if self.pay_min is not None and self.pay_max is not None:
             if self.pay_min > self.pay_max:
-                raise ValueError('pay_min cannot be greater than pay_max')
+                raise ValueError("pay_min cannot be greater than pay_max")
         return self
+
 
 class JobUpdate(BaseModel):
     category_id: Optional[int] = None
@@ -45,12 +49,13 @@ class JobUpdate(BaseModel):
     pay_max: Optional[float] = Field(None, ge=0)
     expires_at: Optional[datetime] = None
 
-    @model_validator(mode='after')
-    def check_pay_range(self) -> 'JobUpdate':
+    @model_validator(mode="after")
+    def check_pay_range(self) -> "JobUpdate":
         if self.pay_min is not None and self.pay_max is not None:
             if self.pay_min > self.pay_max:
-                raise ValueError('pay_min cannot be greater than pay_max')
+                raise ValueError("pay_min cannot be greater than pay_max")
         return self
+
 
 class JobResponse(JobBase):
     id: uuid.UUID

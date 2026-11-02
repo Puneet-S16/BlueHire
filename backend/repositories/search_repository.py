@@ -1,8 +1,10 @@
-from typing import Dict, Any, Tuple, List
-from sqlalchemy.orm import Session
-from sqlalchemy import select, func, or_, desc, asc
-from models.job import Job
+from typing import Any, Dict, List, Tuple
+
 from models.enums import JobStatusEnum
+from models.job import Job
+from sqlalchemy import asc, desc, func, or_, select
+from sqlalchemy.orm import Session
+
 
 class SearchRepository:
     def __init__(self, db: Session):
@@ -16,49 +18,42 @@ class SearchRepository:
         if keyword:
             keyword_term = f"%{keyword}%"
             query = query.where(
-                or_(
-                    Job.title.ilike(keyword_term),
-                    Job.description.ilike(keyword_term)
-                )
+                or_(Job.title.ilike(keyword_term), Job.description.ilike(keyword_term))
             )
 
         # Exact match filters
         if filters.get("category_id") is not None:
             query = query.where(Job.category_id == filters["category_id"])
-            
+
         if filters.get("company_id") is not None:
             query = query.where(Job.company_id == filters["company_id"])
-            
+
         if filters.get("city"):
             query = query.where(Job.city.ilike(f"%{filters['city']}%"))
-            
+
         if filters.get("state"):
             query = query.where(Job.state.ilike(f"%{filters['state']}%"))
-            
+
         if filters.get("job_type") is not None:
             query = query.where(Job.job_type == filters["job_type"])
-            
+
         if filters.get("min_salary") is not None:
             # We assume pay_max >= min_salary or pay_min >= min_salary
             query = query.where(
-                or_(
-                    Job.pay_min >= filters["min_salary"],
-                    Job.pay_max >= filters["min_salary"]
-                )
+                or_(Job.pay_min >= filters["min_salary"], Job.pay_max >= filters["min_salary"])
             )
-            
+
         if filters.get("max_salary") is not None:
             query = query.where(
-                or_(
-                    Job.pay_min <= filters["max_salary"],
-                    Job.pay_max <= filters["max_salary"]
-                )
+                or_(Job.pay_min <= filters["max_salary"], Job.pay_max <= filters["max_salary"])
             )
-            
-        if filters.get("experience_required_years") is not None:
-            query = query.where(Job.experience_required_years <= filters["experience_required_years"])
 
-        # Note: is_remote is ignored because the Job model does not track it natively 
+        if filters.get("experience_required_years") is not None:
+            query = query.where(
+                Job.experience_required_years <= filters["experience_required_years"]
+            )
+
+        # Note: is_remote is ignored because the Job model does not track it natively
         # (avoiding unauthorized model modification).
 
         # Total count
@@ -80,9 +75,9 @@ class SearchRepository:
         page = filters.get("page", 1)
         page_size = filters.get("page_size", 20)
         skip = (page - 1) * page_size
-        
+
         query = query.offset(skip).limit(page_size)
-        
+
         records = list(self.db.execute(query).scalars().all())
-        
+
         return total, records

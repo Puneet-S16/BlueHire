@@ -1,9 +1,11 @@
 import uuid
-from typing import Optional, List
-from sqlalchemy.orm import Session, joinedload
+from typing import List, Optional
+
+from models.skill import Skill, WorkerSkill
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
-from models.skill import Skill, WorkerSkill
+from sqlalchemy.orm import Session, joinedload
+
 
 class SkillRepository:
     def __init__(self, db: Session):
@@ -45,6 +47,7 @@ class SkillRepository:
             self.db.rollback()
             raise
 
+
 class WorkerSkillRepository:
     def __init__(self, db: Session):
         self.db = db
@@ -73,8 +76,12 @@ class WorkerSkillRepository:
     def get_worker_skills(self, worker_id: uuid.UUID) -> List[WorkerSkill]:
         return list(
             self.db.execute(
-                select(WorkerSkill).options(joinedload(WorkerSkill.skill)).where(WorkerSkill.worker_id == worker_id)
-            ).scalars().all()
+                select(WorkerSkill)
+                .options(joinedload(WorkerSkill.skill))
+                .where(WorkerSkill.worker_id == worker_id)
+            )
+            .scalars()
+            .all()
         )
 
     def has_skill(self, worker_id: uuid.UUID, skill_id: int) -> bool:
@@ -82,5 +89,7 @@ class WorkerSkillRepository:
 
     def get_by_worker_and_skill(self, worker_id: uuid.UUID, skill_id: int) -> Optional[WorkerSkill]:
         return self.db.execute(
-            select(WorkerSkill).where(WorkerSkill.worker_id == worker_id, WorkerSkill.skill_id == skill_id)
+            select(WorkerSkill).where(
+                WorkerSkill.worker_id == worker_id, WorkerSkill.skill_id == skill_id
+            )
         ).scalar_one_or_none()

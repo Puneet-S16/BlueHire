@@ -1,7 +1,10 @@
+from typing import Any, List
+
 from pydantic import BaseModel
-from typing import List, Any
+
 from schemas.application import ApplicationResponse
 from schemas.job import JobResponse
+
 
 class WorkerDashboardResponse(BaseModel):
     total_applications: int
@@ -11,6 +14,7 @@ class WorkerDashboardResponse(BaseModel):
     recent_applications: List[ApplicationResponse]
     unread_notifications: int
     unread_messages: int
+
 
 class EmployerDashboardResponse(BaseModel):
     total_jobs_posted: int

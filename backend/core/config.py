@@ -54,7 +54,7 @@ class Settings(BaseSettings):
             raise ValueError(
                 "SECRET_KEY must be set to a strong, randomly generated value "
                 "(at least 32 characters) and must not be a default or placeholder. "
-                "Generate one with: python -c \"import secrets; print(secrets.token_urlsafe(32))\""
+                'Generate one with: python -c "import secrets; print(secrets.token_urlsafe(32))"'
             )
         return value
 

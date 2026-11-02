@@ -1,7 +1,10 @@
 import uuid
 from typing import List
+
 from pydantic import BaseModel, ConfigDict
+
 from schemas.job import JobResponse
+
 
 class SavedJobResponse(BaseModel):
     worker_id: uuid.UUID
@@ -9,6 +12,7 @@ class SavedJobResponse(BaseModel):
     job: JobResponse
 
     model_config = ConfigDict(from_attributes=True)
+
 
 class SavedJobListResponse(BaseModel):
     total: int

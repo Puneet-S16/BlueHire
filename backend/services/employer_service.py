@@ -1,12 +1,19 @@
 import uuid
 from typing import Optional
-from models.user import User
+
+from core.exceptions import (
+    CompanyNotFoundError,
+    EmployerAlreadyExistsError,
+    EmployerNotFoundError,
+    InvalidEmployerRoleError,
+)
 from models.employer import Employer
 from models.enums import RoleEnum
-from schemas.employer import EmployerCreate, EmployerUpdate
-from repositories.employer_repository import EmployerRepository
+from models.user import User
 from repositories.company_repository import CompanyRepository
-from core.exceptions import EmployerAlreadyExistsError, EmployerNotFoundError, InvalidEmployerRoleError, CompanyNotFoundError
+from repositories.employer_repository import EmployerRepository
+from schemas.employer import EmployerCreate, EmployerUpdate
+
 
 class EmployerService:
     def __init__(self, employer_repo: EmployerRepository, company_repo: CompanyRepository):
@@ -15,7 +22,9 @@ class EmployerService:
 
     def create_employer_profile(self, user: User, request: EmployerCreate) -> Employer:
         if user.role != RoleEnum.EMPLOYER:
-            raise InvalidEmployerRoleError("Only users with EMPLOYER role can create an employer profile")
+            raise InvalidEmployerRoleError(
+                "Only users with EMPLOYER role can create an employer profile"
+            )
 
         existing_employer = self.employer_repo.get_by_user_id(user.id)
         if existing_employer:
@@ -32,7 +41,7 @@ class EmployerService:
             first_name=request.first_name,
             last_name=request.last_name,
             job_title=request.job_title,
-            phone_number=request.phone_number
+            phone_number=request.phone_number,
         )
         return self.employer_repo.create_employer(employer)
 
@@ -55,5 +64,5 @@ class EmployerService:
 
         for key, value in update_data.items():
             setattr(employer, key, value)
-            
+
         return self.employer_repo.update_employer(employer)

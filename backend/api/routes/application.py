@@ -27,36 +27,40 @@ from sqlalchemy.orm import Session
 
 router = APIRouter()
 
+
 def get_application_service(db: Session = Depends(get_db)) -> ApplicationService:
     return ApplicationService(
-        ApplicationRepository(db),
-        WorkerRepository(db),
-        EmployerRepository(db),
-        JobRepository(db)
+        ApplicationRepository(db), WorkerRepository(db), EmployerRepository(db), JobRepository(db)
     )
+
 
 def require_worker_role(current_user: User = Depends(get_current_user)) -> User:
     if current_user.role != RoleEnum.WORKER:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, 
-            detail="Only workers can access this endpoint"
+            status_code=status.HTTP_403_FORBIDDEN, detail="Only workers can access this endpoint"
         )
     return current_user
+
 
 def require_employer_role(current_user: User = Depends(get_current_user)) -> User:
     if current_user.role != RoleEnum.EMPLOYER:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, 
-            detail="Only employers can access this endpoint"
+            status_code=status.HTTP_403_FORBIDDEN, detail="Only employers can access this endpoint"
         )
     return current_user
 
-@router.post("/jobs/{job_id}", response_model=ApplicationResponse, status_code=status.HTTP_201_CREATED, summary="Apply to a job")
+
+@router.post(
+    "/jobs/{job_id}",
+    response_model=ApplicationResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Apply to a job",
+)
 def apply_to_job(
     job_id: uuid.UUID,
     request: ApplicationCreate,
     current_user: User = Depends(require_worker_role),
-    application_service: ApplicationService = Depends(get_application_service)
+    application_service: ApplicationService = Depends(get_application_service),
 ) -> Any:
     """
     Apply to a specific job. Requires WORKER role.
@@ -74,10 +78,11 @@ def apply_to_job(
     except ApplicationAlreadyExistsError as e:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=str(e))
 
+
 @router.get("/me", response_model=list[ApplicationResponse], summary="Get my applications")
 def get_my_applications(
     current_user: User = Depends(require_worker_role),
-    application_service: ApplicationService = Depends(get_application_service)
+    application_service: ApplicationService = Depends(get_application_service),
 ) -> Any:
     """
     List applications submitted by the current worker. Requires WORKER role.
@@ -89,11 +94,14 @@ def get_my_applications(
     except WorkerNotFoundError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
 
-@router.get("/jobs/{job_id}", response_model=list[ApplicationResponse], summary="Get applications for a job")
+
+@router.get(
+    "/jobs/{job_id}", response_model=list[ApplicationResponse], summary="Get applications for a job"
+)
 def get_job_applications(
     job_id: uuid.UUID,
     current_user: User = Depends(require_employer_role),
-    application_service: ApplicationService = Depends(get_application_service)
+    application_service: ApplicationService = Depends(get_application_service),
 ) -> Any:
     """
     List applications for a specific job. Requires EMPLOYER role.
@@ -109,12 +117,15 @@ def get_job_applications(
     except InvalidApplicationOwnershipError as e:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
 
-@router.patch("/{application_id}", response_model=ApplicationResponse, summary="Update an application")
+
+@router.patch(
+    "/{application_id}", response_model=ApplicationResponse, summary="Update an application"
+)
 def update_application(
     application_id: uuid.UUID,
     request: ApplicationUpdate,
     current_user: User = Depends(get_current_user),
-    application_service: ApplicationService = Depends(get_application_service)
+    application_service: ApplicationService = Depends(get_application_service),
 ) -> Any:
     """
     Update an application. Employers update status, workers update cover_letter.
@@ -128,11 +139,14 @@ def update_application(
     except InvalidApplicationOwnershipError as e:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=str(e))
 
-@router.delete("/{application_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Withdraw an application")
+
+@router.delete(
+    "/{application_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Withdraw an application"
+)
 def withdraw_application(
     application_id: uuid.UUID,
     current_user: User = Depends(require_worker_role),
-    application_service: ApplicationService = Depends(get_application_service)
+    application_service: ApplicationService = Depends(get_application_service),
 ) -> None:
     """
     Withdraw an application. Requires WORKER role.

@@ -1,6 +1,25 @@
-from fastapi import APIRouter
+from api.routes import (
+    application,
+    auth,
+    category,
+    company,
+    conversation,
+    dashboard,
+    document,
+    education,
+    employer,
+    experience,
+    job,
+    message,
+    notification,
+    recommendation,
+    saved_job,
+    search,
+    skill,
+    worker,
+)
 from api.v1.endpoints import health
-from api.routes import auth, company, employer, worker, job, application, document, skill, education, experience, category, search, notification, dashboard, saved_job, recommendation, conversation, message
+from fastapi import APIRouter
 
 api_router = APIRouter()
 api_router.include_router(health.router, tags=["health"])
@@ -19,6 +38,8 @@ api_router.include_router(search.router, prefix="/search", tags=["search"])
 api_router.include_router(notification.router, prefix="/notifications", tags=["notifications"])
 api_router.include_router(dashboard.router, prefix="/dashboard", tags=["dashboard"])
 api_router.include_router(saved_job.router, prefix="/saved-jobs", tags=["saved-jobs"])
-api_router.include_router(recommendation.router, prefix="/recommendations", tags=["recommendations"])
+api_router.include_router(
+    recommendation.router, prefix="/recommendations", tags=["recommendations"]
+)
 api_router.include_router(conversation.router, prefix="/conversations", tags=["conversations"])
 api_router.include_router(message.router, prefix="/messages", tags=["messages"])

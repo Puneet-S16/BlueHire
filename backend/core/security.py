@@ -1,21 +1,23 @@
+import logging
 import uuid
 from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, Optional, Literal
+from typing import Any, Dict, Literal, Optional
 
-from jose import jwt, JWTError
+from core.config import settings
+from jose import JWTError, jwt
 from pwdlib import PasswordHash
 from pwdlib.hashers.argon2 import Argon2Hasher
 
-from core.config import settings
-import logging
-
 logger = logging.getLogger(__name__)
+
 
 class InvalidTokenError(Exception):
     pass
 
+
 class InvalidTokenTypeError(Exception):
     pass
+
 
 # Initialize password hasher with Argon2
 password_hash = PasswordHash((Argon2Hasher(),))
@@ -42,12 +44,10 @@ def generate_jti() -> str:
     return str(uuid.uuid4())
 
 
-def create_access_token(
-    subject: str | uuid.UUID, expires_delta: Optional[timedelta] = None
-) -> str:
+def create_access_token(subject: str | uuid.UUID, expires_delta: Optional[timedelta] = None) -> str:
     """
     Creates a short-lived JSON Web Token (JWT) for API access.
-    
+
     The payload contains only the required claims, specifically omitting
     sensitive PII or role information.
     """
@@ -66,9 +66,7 @@ def create_access_token(
         "iat": datetime.now(timezone.utc),
     }
 
-    encoded_jwt = jwt.encode(
-        to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
-    )
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
 
@@ -77,16 +75,14 @@ def create_refresh_token(
 ) -> str:
     """
     Creates a long-lived JSON Web Token (JWT) intended for refreshing access tokens.
-    
-    Includes a unique JTI (JWT ID) to enable cryptographic distinguishability 
+
+    Includes a unique JTI (JWT ID) to enable cryptographic distinguishability
     and support token revocation (e.g., via a denylist or database tracking).
     """
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(
-            days=settings.REFRESH_TOKEN_EXPIRE_DAYS
-        )
+        expire = datetime.now(timezone.utc) + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
 
     to_encode: Dict[str, Any] = {
         "sub": str(subject),
@@ -96,9 +92,7 @@ def create_refresh_token(
         "iat": datetime.now(timezone.utc),
     }
 
-    encoded_jwt = jwt.encode(
-        to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
-    )
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
 
@@ -108,9 +102,7 @@ def decode_token(token: str) -> Dict[str, Any]:
     Raises InvalidTokenError if the token is invalid or expired.
     """
     try:
-        payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
-        )
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         return payload
     except JWTError as e:
         logger.warning(f"JWT decoding failed: {str(e)}")

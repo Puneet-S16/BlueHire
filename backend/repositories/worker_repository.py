@@ -1,8 +1,10 @@
 import uuid
 from typing import Optional
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
+
 from models.worker import Worker
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
+
 
 class WorkerRepository:
     def __init__(self, db: Session):
