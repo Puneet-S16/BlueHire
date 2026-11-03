@@ -1,272 +1,51 @@
-# BlueHire
+# BlueHire showcase MVP
 
-BlueHire is a premium marketplace for blue-collar workers and contractors.
+BlueHire is a four-screen marketplace showcase for blue-collar workers and employers.
 
-## Tech Stack
+## Showcase screens
 
-- **Frontend**: Next.js 15 (App Router), TypeScript, Tailwind CSS, shadcn/ui
-- **Backend**: FastAPI, PostgreSQL, SQLAlchemy
+- **Home** introduces the BlueHire marketplace.
+- **Jobs** lets users browse demo listings with search and filters.
+- **Job details** shows a listing and a demo **Apply** interaction.
+- **Employer job posting** lets employers create a job listing.
 
-## Project Structure
+## Demo behavior
 
-```
-bluehire/
-├── frontend/    # Next.js frontend
-└── backend/     # FastAPI backend
-```
+Job listings use static demo data because the backend API timed out during the MVP work. Jobs created through the employer posting screen are saved in the browser's local storage, so they are available in that browser and are not sent to a server. **Apply** is a demo interaction and does not submit a real application.
 
-## Getting Started
+## Tech stack
 
-### Backend Setup
+- **Frontend:** Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, and shadcn/ui components.
+- **Backend in the repository:** FastAPI, SQLAlchemy, and PostgreSQL. The showcase does not require the backend to run.
 
-1. Navigate to the backend directory:
-   ```bash
-   cd backend
-   ```
-2. Create a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Set up environment variables:
-   ```bash
-   cp .env.example .env
-   ```
-5. Run the development server:
-   ```bash
-   uvicorn main:app --reload
-   ```
+## Run the showcase locally
 
-### Frontend Setup
+Prerequisites: Node.js compatible with Next.js 16 and npm.
 
-1. Navigate to the frontend directory:
-   ```bash
-   cd frontend
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Set up environment variables:
-   ```bash
-   cp .env.example .env.local
-   ```
-4. Run the development server:
-   ```bash
-   npm run dev
-   ```
-
-## API Documentation
-
-Once the backend is running, you can access the interactive API documentation at:
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
-
-## Docker Setup
-
-The project uses Docker to provide a localized PostgreSQL database and pgAdmin interface.
-
-### Prerequisites
-- **Docker Desktop**: Must be installed and running.
-- **WSL2 Requirement**: Ensure WSL2 backend is enabled in Docker Desktop settings for optimal performance on Windows.
-
-### Starting and Stopping Containers
-- **Start Containers**: Run `docker compose up -d` in the root directory.
-- **Stop Containers**: Run `docker compose down`.
-
-### Accessing pgAdmin
-1. Copy `backend/.env.example` to `.env` and `docker-compose`/root `.env.example` to `.env.docker` in the project root, then set real values for every `CHANGE_ME` placeholder.
-2. Start the stack: `docker compose up -d`.
-3. Open your browser and navigate to `http://localhost:5050`.
-4. Login using the credentials you set in `.env.docker` (`PGADMIN_DEFAULT_EMAIL` / `PGADMIN_DEFAULT_PASSWORD`).
-
-### Ports Used
-- **5432**: PostgreSQL Database
-- **5050**: pgAdmin Web Interface
-
-### PostgreSQL Database Details
-- **Database Name**: `bluehire` (override via `POSTGRES_DB`)
-- **Username**: `postgres` (override via `POSTGRES_USER`)
-- **Password**: set via `POSTGRES_PASSWORD` (never commit this value)
-
-### Backend environment variables
-Copy `backend/.env.example` to `backend/.env` and set a strong `SECRET_KEY` (at least 32 characters):
-
-```bash
-python -c "import secrets; print(secrets.token_urlsafe(32))"
-```
-
-Never use the `CHANGE_ME` placeholder in production.
-
-## Alembic & Database Migrations
-
-This project uses Alembic for database migrations, which allows us to safely modify the database schema over time without losing data.
-
-### Project Migration Workflow
-1. Modify SQLAlchemy models in `backend/models/`.
-2. Generate a new migration script based on your changes.
-3. Apply the migration to update the database.
-
-### How to Create Migrations
-To auto-generate a migration after changing your models, run:
-```bash
-cd backend
-alembic revision --autogenerate -m "Describe your changes"
-```
-
-### How to Apply Migrations
-To upgrade the database to the latest schema:
-```bash
-cd backend
-alembic upgrade head
-```
-
-### How to Rollback Migrations
-If you need to revert the last migration:
-```bash
-cd backend
-alembic downgrade -1
-```
-
-### Development Notes
-- When downgrading PostgreSQL databases, you may need to manually drop `ENUM` types using `DROP TYPE type_name CASCADE` if you intend to re-upgrade and recreate them, due to how Alembic handles ENUMs natively.
-
-## Testing
-
-### Backend Tests
-
-Tests run against an isolated `bluehire_test` PostgreSQL database — never against development or production data.
-
-```bash
-cd backend
-
-# Install test dependencies (already in requirements.txt)
-pip install -r requirements.txt
-
-# Set a dummy SECRET_KEY (required by config validation at import time)
-export SECRET_KEY="test-secret-key-that-is-at-least-32-chars-long!!"
-
-# Ensure the test database exists (created automatically by conftest)
-# Run the full test suite
-python -m pytest tests/ -v
-```
-
-### Frontend Tests
+From the repository root:
 
 ```bash
 cd frontend
-
-# Install dependencies (includes vitest and Testing Library)
 npm ci
-
-# Run the test suite
-npm run test
+npm run dev
 ```
 
-## Code Quality
+Open [http://localhost:3000](http://localhost:3000). No backend setup is needed for the showcase. The optional `NEXT_PUBLIC_API_URL` setting in `frontend/.env.example` is for API-connected development; the showcase listings use static demo data.
 
-### Backend (Python)
+## Frontend checks
 
-Linting and formatting are enforced with [Ruff](https://docs.astral.sh/ruff/):
-
-```bash
-cd backend
-
-# Lint check
-ruff check backend/
-
-# Format check
-ruff format --check backend/
-
-# Auto-fix lint issues and apply formatting
-ruff check --fix backend/
-ruff format backend/
-```
-
-Configuration lives in `pyproject.toml`.
-
-### Frontend (TypeScript/React)
+Run these from `frontend/`:
 
 ```bash
-cd frontend
-
-# Lint
 npm run lint
-
-# Type check
 npx tsc --noEmit
-
-# Production build
 npm run build
 ```
 
-## Continuous Integration
+## Repository layout
 
-GitHub Actions runs on every push and pull request to `main` (`.github/workflows/ci.yml`):
-
-- **Backend**: dependency install, Ruff lint + format checks, pytest against a PostgreSQL service container
-- **Frontend**: `npm ci`, ESLint, TypeScript type check, production build, Vitest tests
-
-All jobs run independently. No production secrets are required — CI uses dummy test-only credentials.
-
-## Authentication Security Foundation
-
-BlueHire implements a robust, production-ready security foundation using JSON Web Tokens (JWT) and Argon2 hashing.
-
-### Security Architecture
-- **Argon2 Password Hashing**: Passwords are hashed using `pwdlib` and Argon2, protecting against brute-force and rainbow table attacks.
-- **JWT Authentication Strategy**: API routes are secured via stateless Bearer access tokens and stateful refresh tokens.
-- **Access Tokens**: Short-lived (15 minutes) tokens containing a unique JWT ID (`jti`), `sub`, `type`, `iat`, and `exp`.
-- **Refresh Tokens**: Long-lived (7 days) stateful tokens stored in the `refresh_tokens` table. Each refresh token is tracked by its JWT ID (`jti`), expiry, and revocation timestamp.
-- **Refresh Token Rotation**: On `/auth/refresh`, the old refresh token is revoked and a new one issued atomically in a single database transaction. Row-level locking (`SELECT FOR UPDATE`) prevents concurrent double-rotation.
-- **Refresh Token Reuse Detection**: If an already-revoked refresh token is presented, the request is rejected and all remaining active refresh tokens for that user are revoked, forcing re-authentication across all devices.
-- **Logout Revocation**: `/auth/logout` revokes the presented refresh token. Idempotent: invalid or unknown tokens still return success without leaking state.
-- **Password-Change Revocation**: `/auth/change-password` revokes every active refresh token for the user atomically with the password update, forcing re-authentication on all devices.
-- **Rate Limiting**: `/auth/signup` and `/auth/login` are rate-limited (5 requests/minute per client) via `slowapi` to mitigate brute-force and credential-stuffing attacks. Local development uses in-memory storage; production should use Redis and trust `X-Forwarded-For` from a reverse proxy.
-- **Email Enumeration Resistance**: Login returns the same generic error whether the email is unknown or the password is wrong.
-- **Custom Security Exceptions**: Sanitized `InvalidTokenError` and `InvalidTokenTypeError` exceptions avoid leaking implementation details.
-
-### Environment Variables Required
-The security foundation relies on the following environment variables:
-- `SECRET_KEY`: A cryptographically secure random string used to sign JWTs.
-- `ALGORITHM`: The JWT signing algorithm (defaults to `HS256`).
-- `ACCESS_TOKEN_EXPIRE_MINUTES`: Lifespan of access tokens.
-- `REFRESH_TOKEN_EXPIRE_DAYS`: Lifespan of refresh tokens.
-
-## Authentication Schemas
-
-The authentication system employs Pydantic V2 schemas to enforce strict data validation before any business logic is executed.
-
-### Validation Rules & Policy
-- **Email Validation**: Enforced via `EmailStr` adhering to standard RFCs.
-- **Password Policy**: Enforced using custom validators. Passwords must be at least 8 characters long, and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.
-- **Shared Enums**: The `SignupRequest` and `UserResponse` schemas share the `RoleEnum` with the SQLAlchemy models, ensuring complete consistency across the application layers.
-
-### Key Schemas
-- `SignupRequest`: Validates new registrations (email, password, role, term acceptance).
-- `LoginRequest`: Validates standard JSON-based login payloads.
-- `TokenResponse`: Structures the returned `access_token`, `refresh_token`, and token metadata.
-- `RefreshTokenRequest`: Validates refresh token payloads.
-- `UserResponse`: Defines the public profile format, purposefully omitting sensitive fields like `password_hash`.
-- `ChangePasswordRequest`: Validates authenticated password resets and enforces strength and confirmation match checks.
-
-## Authentication Module
-
-The Authentication Module completes the backend security pipeline by integrating the data access layer, business logic layer, and HTTP routing securely.
-
-### Architecture
-- **Repository Pattern**: Extracted all database reads and writes to `UserRepository`.
-- **Service Layer**: Placed all complex registration, login, and rotation logic in `AuthService` away from HTTP concerns.
-- **Dependency Injection**: Seamlessly resolved the database session, repository, service, and current user models via FastAPI `Depends`.
-
-### API Endpoints
-- `POST /api/v1/auth/signup`: Accepts user credentials and creates a new account.
-- `POST /api/v1/auth/login`: Authenticates credentials to dispense access and refresh JWTs.
-- `POST /api/v1/auth/refresh`: Consumes a valid refresh token and performs token rotation securely.
-- `POST /api/v1/auth/logout`: Revokes active refresh token sessions.
-- `POST /api/v1/auth/change-password` **(Protected)**: Verifies the current active password hash before securely enforcing the new one.
-- `GET /api/v1/auth/me` **(Protected)**: Unwraps the bearer token to automatically return the current active `UserResponse` payload.
+```text
+bluehire/
+├── frontend/  # Next.js showcase
+└── backend/   # FastAPI service and database integration
+```
