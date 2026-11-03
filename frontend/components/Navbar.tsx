@@ -12,10 +12,10 @@ export default function Navbar() {
         </div>
         <div className="flex items-center gap-4">
           <Button variant="ghost" asChild>
-            <Link href="/login">Login</Link>
+            <Link href="/jobs">Find Jobs</Link>
           </Button>
           <Button asChild>
-            <Link href="/signup">Sign Up</Link>
+            <Link href="/employer">Post a Job</Link>
           </Button>
         </div>
       </div>

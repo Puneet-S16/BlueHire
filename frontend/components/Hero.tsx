@@ -14,10 +14,10 @@ export default function Hero() {
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Button size="lg" className="h-12 px-8 text-lg" asChild>
-            <Link href="/jobs">Hire Talent</Link>
+            <Link href="/employer">Hire Talent</Link>
           </Button>
           <Button size="lg" variant="outline" className="h-12 px-8 text-lg" asChild>
-            <Link href="/worker-registration">Find Work</Link>
+            <Link href="/jobs">Find Work</Link>
           </Button>
         </div>
       </div>
